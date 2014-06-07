@@ -12,7 +12,9 @@ proguardCache in Android ++= Seq(
 
 proguardOptions in Android ++= Seq("-dontobfuscate", "-dontoptimize", "-dontwarn scala.collection.mutable.**")
 
-libraryDependencies += "org.scaloid" %% "scaloid" % "3.4-10"
+libraryDependencies ++= Seq(
+  "org.scaloid" %% "scaloid" % "3.4-10"
+)
 
 scalacOptions in Compile += "-feature"
 

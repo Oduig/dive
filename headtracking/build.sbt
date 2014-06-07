@@ -2,7 +2,7 @@ import android.Keys._
 
 android.Plugin.androidBuild
 
-name := "hello-scaloid-sbt"
+name := "Dive head tracker"
 
 scalaVersion := "2.11.0"
 

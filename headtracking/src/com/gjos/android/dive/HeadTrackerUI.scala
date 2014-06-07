@@ -1,10 +1,9 @@
-package scaloid.example
+package com.gjos.android.dive
 
 import org.scaloid.common._
 import android.graphics.Color
 
-class HelloScaloid extends SActivity {
-
+class HeadTrackerUI extends SActivity {
   onCreate {
     contentView = new SVerticalLayout {
       style {

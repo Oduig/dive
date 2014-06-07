@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="red">Red alert!</string>
-	<string name="app_name">Dive head tracker</string>
+	<string name="appName">Dive head tracker</string>
+    <string name="selectConnectionType">Select a connection type</string>
+    <string name="selectAddress">Select an IP address (for TCP/UDP)</string>
+    <string name="selectPort">Select a port (for TCP/UDP)</string>
+    <string name="defaultIp">192.168.1.170</string>
+    <string name="defaultPort">13337</string>
+    <string name="connect">Connect</string>
+    <string name="bluetooth">Bluetooth</string>
+    <string name="udp">UDP</string>
+    <string name="tcp">TCP</string>
 </resources>

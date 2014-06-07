@@ -1,22 +1,21 @@
 package com.gjos.android.dive
 
-import org.scaloid.common._
-import android.graphics.Color
+import android.app.Activity
+import android.os.Bundle
+import android.widget.{Button, Toast}
+import scala.concurrent.duration._
+import android.view.View
 
-class HeadTrackerUI extends SActivity {
-  onCreate {
-    contentView = new SVerticalLayout {
-      style {
-        case b: SButton => b.textColor(Color.RED).onClick(toast("Bang!"))
-        case t: STextView => t textSize 10.dip
-        case v => v.backgroundColor(Color.YELLOW)
-      }
-      STextView("I am 10 dip tall")
-      STextView("Me too")
-      STextView("I am taller than you") textSize 15.dip // overriding
-      SEditText("Yellow input field")
-      SButton(R.string.red)
-    } padding 20.dip
+class HeadTrackerUI extends RichActivity {
+  override def onCreate(savedState: Bundle) {
+    super.onCreate(savedState)
+    this.setContentView(R.layout.main)
+
+    val connectButton: Button = find(R.id.connectButton)
+    connectButton.setOnClickListener(connectToServer)
   }
 
+  def connectToServer() = {
+    toast("Connecting...")
+  }
 }

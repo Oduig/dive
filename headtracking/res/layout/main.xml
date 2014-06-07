@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:padding="20dp">
+
+    <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/selectConnectionType" />
+
+    <RadioGroup android:id="@+id/connectionTypeGroup"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
+        <RadioButton
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tcp" />
+        <RadioButton
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/udp" />
+        <RadioButton
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/bluetooth" />
+    </RadioGroup>
+
+
+    <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/selectAddress" />
+    <EditText android:id="@+id/ipEdit"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/defaultIp"
+            android:inputType="text"/>
+
+
+    <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/selectPort" />
+    <EditText android:id="@+id/portEdit"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/defaultPort"
+            android:inputType="numberDecimal"/>
+
+    <Button android:id="@+id/connectButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/connect" />
+
+</LinearLayout>

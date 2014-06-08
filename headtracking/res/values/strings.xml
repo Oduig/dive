@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="appName">Dive head tracker</string>
+	<string name="appName">Dive head tracker client</string>
     <string name="selectConnectionType">Select a connection type</string>
     <string name="selectAddress">Select an IP address (for TCP/UDP)</string>
     <string name="selectPort">Select a port (for TCP/UDP)</string>

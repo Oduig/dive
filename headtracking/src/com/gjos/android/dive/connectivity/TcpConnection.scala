@@ -5,7 +5,7 @@ import scala.concurrent.blocking
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
-class TcpConnection extends ConnectionImpl {
+class TcpConnection(protected val ip: String, protected val port: Int) extends ConnectionImpl {
 
   protected def openSafely() {
     blocking(Thread sleep 2.seconds.toMillis)

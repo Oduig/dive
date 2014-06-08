@@ -12,6 +12,7 @@ proguardCache in Android ++= Seq(
 proguardOptions in Android ++= Seq("-dontobfuscate", "-dontoptimize", "-dontwarn scala.collection.mutable.**")
 
 libraryDependencies ++= Seq(
+  "com.netflix.rxjava" % "rxjava-scala" % "0.19.0"
 )
 
 scalacOptions in Compile += "-feature"

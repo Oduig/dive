@@ -5,7 +5,7 @@ import scala.concurrent.blocking
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
-class UdpConnection extends ConnectionImpl {
+class UdpConnection(protected val ip: String, protected val port: Int) extends ConnectionImpl {
 
 
   protected def openSafely() {

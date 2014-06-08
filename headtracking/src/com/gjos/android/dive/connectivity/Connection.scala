@@ -1,4 +1,4 @@
-package com.gjos.android.dive
+package com.gjos.android.dive.connectivity
 
 import scala.concurrent.Future
 

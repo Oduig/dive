@@ -10,7 +10,7 @@ class RichActivity extends Activity {
 
   private lazy val toaster = {
     val toast = Toast.makeText(this, "", 1.second.toMillis.toInt)
-    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 0)
+    toast.setGravity(Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL, 0, 0)
     toast
   }
 

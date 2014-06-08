@@ -1,25 +1,20 @@
-package com.gjos.android.dive
+package com.gjos.android.dive.connectivity
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.blocking
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
-class DummyConnection extends Connection {
+class BluetoothConnection extends ConnectionImpl {
 
-  private var connectionOpen = false
-
-  def open() = Future {
-    blocking(Thread sleep 2.second.toMillis)
-    connectionOpen = true
+  protected def openSafely() {
+    blocking(Thread sleep 2.seconds.toMillis)
   }
 
-  def close() = Future {
+  protected def closeSafely() {
     blocking(Thread sleep 1.second.toMillis)
-    connectionOpen = false
   }
 
-  def isOpen() = connectionOpen
 
   def send(b: Byte) = Future {
 

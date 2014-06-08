@@ -4,6 +4,10 @@ import android.os.Bundle
 import android.widget.{EditText, RadioGroup, Button}
 import scala.util.{Failure, Success, Try}
 import scala.concurrent.ExecutionContext.Implicits.global
+import com.gjos.android.dive.connectivity._
+import scala.util.Success
+import scala.util.Failure
+import scala.Some
 
 class HeadTrackerUI extends RichActivity {
   override def onCreate(savedState: Bundle) {
@@ -17,21 +21,31 @@ class HeadTrackerUI extends RichActivity {
   def radioGroup: RadioGroup = find(R.id.connectionTypeGroup)
   def ipEdit: Button = find(R.id.ipEdit)
   def portEdit: EditText = find(R.id.portEdit)
-  val connection = new DummyConnection()
 
-  def connectBtnClick() = if (connection.isOpen) startDisconnect else startConnect
+  var currentConnection: Option[Connection] = None
 
+  def connectBtnClick() = currentConnection match {
+    case Some(connection) if connection.isOpen => startDisconnect()
+    case _ => startConnect()
+  }
 
   def startConnect() {
+    currentConnection = Some(createConnection())
     connectButton.setEnabled(false)
     toast("Connecting...")
-    connection.open() onComplete connectComplete
+    currentConnection.get.open() onComplete connectComplete
+  }
+
+  def createConnection() = radioGroup.getCheckedRadioButtonId match {
+    case R.id.tcp => new TcpConnection
+    case R.id.udp => new UdpConnection
+    case R.id.bluetooth => new BluetoothConnection
   }
 
   def startDisconnect() {
     connectButton.setEnabled(false)
     toast("Disconnecting...")
-    connection.close() onComplete disconnectComplete
+    currentConnection.get.close() onComplete disconnectComplete
   }
 
   def connectComplete(result: Try[Unit]) = inUiThread {

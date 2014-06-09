@@ -5,9 +5,11 @@ import android.widget.{EditText, RadioGroup, Button}
 import com.gjos.android.dive.connectivity._
 import scala.Some
 import com.gjos.android.dive.sensing.LinearAccelerationSensor
-import android.hardware.{Sensor, SensorEvent, SensorEventListener}
+import android.hardware.{SensorManager, Sensor, SensorEvent, SensorEventListener}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Try, Failure, Success}
+import android.util.Log
+import android.content.Context
 
 class HeadTrackerUI extends RichActivity with SensorEventListener {
   override def onCreate(savedState: Bundle) {
@@ -15,6 +17,25 @@ class HeadTrackerUI extends RichActivity with SensorEventListener {
     this.setContentView(R.layout.main)
 
     connectButton.setOnClickListener(connectBtnClick)
+  }
+
+  private lazy val sensorManager = getSystemService(Context.SENSOR_SERVICE).asInstanceOf[SensorManager]
+  private lazy val sensors = Set(
+    new LinearAccelerationSensor()
+  )
+
+  private def registerSensorListeners() {
+    for (sensor <- sensors) yield {
+      val sensorDevice = sensorManager.getDefaultSensor(sensor.sensorType)
+      sensorManager.registerListener(this, sensorDevice, SensorManager.SENSOR_DELAY_FASTEST)
+    }
+  }
+
+  private def unregisterSensorListeners() {
+    for (sensor <- sensors) {
+      val sensorDevice = sensorManager.getDefaultSensor(sensor.sensorType)
+      sensorManager.unregisterListener(this, sensorDevice)
+    }
   }
 
   private def connectButton: Button = find(R.id.connectButton)
@@ -25,10 +46,6 @@ class HeadTrackerUI extends RichActivity with SensorEventListener {
   // Always works since EditText type is set to number
   private def currentPort: Int = find[EditText](R.id.portEdit).getText.toString.toInt
 
-  private lazy val sensors = Set(
-    new LinearAccelerationSensor(this)
-  )
-
   var currentConnection: Option[Connection] = None
 
   def connectBtnClick() = currentConnection match {
@@ -36,10 +53,12 @@ class HeadTrackerUI extends RichActivity with SensorEventListener {
     case _ => startConnect()
   }
 
-  def onSensorChanged(event: SensorEvent) {
-    for (sensor <- sensors if sensor.sensorType == event.sensor.getType) {
-      sensor.onChange(event.values)
-    }
+  def onSensorChanged(event: SensorEvent) = currentConnection match {
+    case Some(connection) if connection.isOpen =>
+      for (sensor <- sensors if sensor.sensorType == event.sensor.getType) {
+        sensor.onChange(event.values)
+      }
+    case _ =>
   }
 
   def onAccuracyChanged(event: Sensor, accuracy: Int) {}
@@ -55,6 +74,7 @@ class HeadTrackerUI extends RichActivity with SensorEventListener {
     require(currentConnection.nonEmpty && currentConnection.get.isOpen, "Cannot disconnect, no connection is open.")
     uponDisconnecting()
     currentConnection.get.close() onComplete uponDisconnect
+    currentConnection = None
   }
 
   private def uponConnecting() {
@@ -78,6 +98,7 @@ class HeadTrackerUI extends RichActivity with SensorEventListener {
       case Success(_) =>
         toast("Connected!")
         connectButton.setText("Disconnect")
+        registerSensorListeners()
       case Failure(ex) =>
         toast("Failed to connect: " + ex.getMessage)
     }
@@ -87,6 +108,7 @@ class HeadTrackerUI extends RichActivity with SensorEventListener {
   private def uponDisconnect(result: Try[Unit]) = inUiThread {
     result match {
       case Success(_) =>
+        unregisterSensorListeners()
         toast("Disconnected.")
         connectButton.setText("Connect")
       case Failure(ex) =>

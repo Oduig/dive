@@ -8,7 +8,8 @@
                  android:allowBackup="false"
                  android:icon="@drawable/icon">
         <activity android:name="HeadTrackerUI"
-                  android:label="@string/appName">
+                  android:label="@string/appName"
+                  android:configChanges="orientation|keyboardHidden" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

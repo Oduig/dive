@@ -89,17 +89,22 @@ class HeadTrackerUI extends RichActivity {
     connectButton.setEnabled(true)
   }
 
+  var lastMeasurement = System.nanoTime
+  var currentSpeed = Vec.origin3D // meters per second
   def onAcceleration(values: Array[Float]) = values match {
     case Array(dx, dy, dz) =>
-      val treshold = 2
-      if (dx > treshold || dy > treshold || dz > treshold) {
-        val (absX, absY, absZ) = (Math.abs(dx), Math.abs(dy), Math.abs(dz))
-        val movement = Math.max(absX, Math.max(absY, absZ)) match {
-          case `absX` => if (dx > 0) "->" else "<-"
-          case `absY` => if (dy > 0) "^" else "v"
-          case `absZ` => if (dz > 0) "x" else "o"
-        }
-        statusText.setText(f"Last movement: $movement ($dx%.1f, $dy%.1f, $dz%.1f)")
+      val nowNanos = System.nanoTime
+      val dt = (nowNanos - lastMeasurement) / 1000000000.0f
+      lastMeasurement = nowNanos
+
+      currentSpeed += Vec(dx, dy, dz) * dt
+
+      val treshold = 10
+      // FIXME calc actual speed?
+      if ((currentSpeed.coordinates map Math.abs).sum > treshold) {
+        statusText.setText(f"Last active speed: $currentSpeed")
+      } else {
+        currentSpeed = Vec.origin3D
       }
   }
 }

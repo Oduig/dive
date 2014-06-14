@@ -8,7 +8,7 @@ trait Connection {
 
   def isOpen(): Boolean
 
-  def send(b: Byte): Future[Unit]
+  def send(bs: Array[Byte]): Future[Unit]
 
   def onReceive(handler: Byte => Unit): Unit
 

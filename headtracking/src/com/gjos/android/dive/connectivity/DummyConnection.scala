@@ -16,7 +16,7 @@ class DummyConnection extends ConnectionImpl {
   }
 
 
-  def send(b: Byte) = Future {
+  def send(bs: Array[Byte]) = Future {
 
   }
 

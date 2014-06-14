@@ -7,6 +7,7 @@ import scala.Some
 import com.gjos.android.dive.sensing.SensorBroker
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Try, Failure, Success}
+import com.gjos.android.dive.calc.Vec
 
 class HeadTrackerUI extends RichActivity {
   lazy val sensorBroker = new SensorBroker(this)
@@ -91,20 +92,20 @@ class HeadTrackerUI extends RichActivity {
 
   var lastMeasurement = System.nanoTime
   var currentSpeed = Vec.origin3D // meters per second
-  def onAcceleration(values: Array[Float]) = values match {
+  def onAcceleration(values: Array[Float]): Unit = values match {
     case Array(dx, dy, dz) =>
       val nowNanos = System.nanoTime
       val dt = (nowNanos - lastMeasurement) / 1000000000.0f
       lastMeasurement = nowNanos
 
-      currentSpeed += Vec(dx, dy, dz) * dt
+      val dv = Vec(dx, dy, dz) *= dt
+      val dvTreshold = .1f
+      if (dv.length < dvTreshold) currentSpeed *= .99f
+      else currentSpeed += dv
 
-      val treshold = 10
-      // FIXME calc actual speed?
-      if ((currentSpeed.coordinates map Math.abs).sum > treshold) {
+      val viewTreshold = .1f
+      if (currentSpeed.length > viewTreshold) {
         statusText.setText(f"Last active speed: $currentSpeed")
-      } else {
-        currentSpeed = Vec.origin3D
       }
   }
 }

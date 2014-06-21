@@ -2,9 +2,13 @@ package com.gjos.scala.dive.remotecontrol
 
 import scala.annotation.tailrec
 import com.gjos.android.dive.connectivity.{Listener, TcpListener, UdpListener, BluetoothListener}
+import com.gjos.scala.dive.remotecontrol.control.MouseMover
 
 object RcServerConsole extends App {
   println("Remote control server app for Durovis Dive.")
+
+  private var connection: Option[Listener] = None
+  private val mouseMover = new MouseMover()
 
   handleInput("h".toList)
 
@@ -22,16 +26,15 @@ object RcServerConsole extends App {
       case 'u' :: cs => listenUdp(cs.mkString)
       case 'b' :: cs => listenBluetooth(cs.mkString)
       case 'd' :: Nil => disconnect()
-      case 'q' :: Nil => println("Done.")
+      case 'q' :: Nil => quit()
       case _ => println("Say what?")
     }
     if (cmd != List('q')) {
       println("""What would you like to do?""")
-      handleInput(readLine().toList)
+      val newCmd = readLine()
+      if (newCmd != null) handleInput(newCmd.toList)
     }
   }
-
-  private var connection: Option[Listener] = None
 
   private def listenTcp(args: String) {
     val port = if (args.trim.size > 0) args.trim.toInt else 13337
@@ -56,7 +59,17 @@ object RcServerConsole extends App {
 
   private def handleMessage(content: String) {
     println("Received: " + content)
+    val Array(x, y, _) = content.split(",")
+    mouseMover.move(x.toInt / 10, y.toInt / 10)
   }
 
-  private def disconnect() = connection map (_.close)
+  private def quit() {
+    disconnect()
+    println("Done.")
+  }
+
+  private def disconnect() = {
+    connection map (_.close)
+    println("Disconnected.")
+  }
 }

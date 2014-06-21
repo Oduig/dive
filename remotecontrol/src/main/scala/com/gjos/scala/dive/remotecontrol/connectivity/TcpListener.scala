@@ -6,6 +6,7 @@ import scala.concurrent.Future
 import java.net.ServerSocket
 import java.io.{InputStreamReader, BufferedReader}
 import scala.annotation.tailrec
+import scala.concurrent.duration._
 
 class TcpListener(protected val port: Int) extends ListenerImpl {
 
@@ -35,8 +36,12 @@ class TcpListener(protected val port: Int) extends ListenerImpl {
 
   @tailrec private def pollWhileOpen(): Unit = connection match {
     case Some((_, stream)) =>
-      val line = stream.readLine()
-      subscribers foreach (handle => handle(line))
+      if (stream.ready()) {
+        val line = stream.readLine()
+        subscribers foreach (handle => handle(line))
+      } else {
+        blocking(Thread sleep 5.millisecond.toMillis)
+      }
       pollWhileOpen()
     case _ =>
   }

@@ -100,12 +100,19 @@ class HeadTrackerUI extends RichActivity {
 
       val dv = Vec(dx, dy, dz) *= dt
       val dvTreshold = .1f
-      if (dv.length < dvTreshold) currentSpeed *= .99f
+      if (dv.length < dvTreshold) currentSpeed *= .90f
       else currentSpeed += dv
 
-      val viewTreshold = .1f
-      if (currentSpeed.length > viewTreshold) {
-        statusText.setText(f"Last active speed: $currentSpeed")
+      if (currentSpeed.length > .1f) {
+        val csv = currentSpeed.coordinates.map(c => (c * 100).toInt).mkString(",")
+        currentConnection foreach (_.send(csv) onFailure handleFailure)
+        statusText.setText(s"Current speed (cm/s): $csv")
       }
+  }
+
+  def handleFailure: PartialFunction[Throwable, Unit] = {
+    case ex: RuntimeException =>
+      startDisconnect()
+      statusText.setText(s"Failed sending: ${ex.getMessage}")
   }
 }

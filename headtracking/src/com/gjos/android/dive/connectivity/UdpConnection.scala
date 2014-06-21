@@ -17,7 +17,7 @@ class UdpConnection(protected val ip: String, protected val port: Int) extends C
   }
 
 
-  def send(bs: Array[Byte]) = Future {
+  def send(line: String) = Future {
 
   }
 

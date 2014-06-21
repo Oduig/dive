@@ -24,9 +24,9 @@ class TcpConnection(protected val ip: String, protected val port: Int) extends C
     case _ =>
   }
 
-  def send(bs: Array[Byte]) = connection match {
+  def send(line: String) = connection match {
     case Some((_, stream)) =>
-      Future(stream write bs)
+      Future(stream writeBytes (line + '\n'))
     case None =>
       throw new IOException("Cannot send TCP data while disconnected")
   }

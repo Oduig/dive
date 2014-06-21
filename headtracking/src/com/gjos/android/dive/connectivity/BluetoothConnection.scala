@@ -16,7 +16,7 @@ class BluetoothConnection extends ConnectionImpl {
   }
 
 
-  def send(bs: Array[Byte]) = Future {
+  def send(line: String) = Future {
 
   }
 

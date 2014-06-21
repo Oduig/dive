@@ -9,6 +9,8 @@ class Vec(private val coordinate: mutable.Buffer[Float]) {
   def y = coordinate(1)
   def z = coordinate(2)
 
+  def coordinates = coordinate.toList
+
   def numDimensions = coordinate.size
 
   def length = Math sqrt coordinate.map(x => x * x).sum

@@ -13,11 +13,12 @@ class TcpListener(protected val port: Int) extends ListenerImpl {
   var connection: Option[(ServerSocket, BufferedReader)] = None
   var subscribers = List[String => Unit]()
 
+  // TODO allow accepting socket a second time
   protected def openSafely() {
     val sock = new ServerSocket(port)
     val stream = new BufferedReader(new InputStreamReader(sock.accept().getInputStream))
-    Future(pollWhileOpen)
     connection = Some((sock, stream))
+    pollWhileOpen
   }
 
   protected def closeSafely() = connection match {

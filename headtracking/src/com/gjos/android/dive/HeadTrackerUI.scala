@@ -2,12 +2,12 @@ package com.gjos.android.dive
 
 import android.os.Bundle
 import android.widget.{TextView, EditText, RadioGroup, Button}
+import com.gjos.android.dive.calc.Vec
 import com.gjos.android.dive.connectivity._
-import scala.Some
 import com.gjos.android.dive.sensing.SensorBroker
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Try, Failure, Success}
-import com.gjos.android.dive.calc.Vec
+import scala.concurrent.duration._
 
 class HeadTrackerUI extends RichActivity {
   lazy val sensorBroker = new SensorBroker(this)
@@ -17,7 +17,7 @@ class HeadTrackerUI extends RichActivity {
     this.setContentView(R.layout.main)
 
     connectButton.setOnClickListener(connectBtnClick)
-    sensorBroker.linearAcceleration.observable.subscribe(onAcceleration _)
+    sensorBroker.gyroscope.observable.buffer(10).subscribe(onOrientationChanged _)
   }
 
   private def connectButton: Button = find(R.id.connectButton)
@@ -90,25 +90,25 @@ class HeadTrackerUI extends RichActivity {
     connectButton.setEnabled(true)
   }
 
-  var lastMeasurement = System.nanoTime
-  var currentSpeed = Vec.origin3D // meters per second
-  def onAcceleration(values: Array[Float]): Unit = values match {
-    case Array(dx, dy, dz) =>
-      val nowNanos = System.nanoTime
-      val dt = (nowNanos - lastMeasurement) / 1000000000.0f
-      lastMeasurement = nowNanos
+  var lastMeasurement = currentMicros
+  def onOrientationChanged(buffer: Seq[Array[Float]]): Unit = {
+    val muSec = currentMicros
+    val dt = muSec - lastMeasurement
+    lastMeasurement = muSec
 
-      val dv = Vec(dx, dy, dz) *= dt
-      val dvTreshold = .1f
-      if (dv.length < dvTreshold) currentSpeed *= .90f
-      else currentSpeed += dv
+    val radiansMoved = Vec(0, 0, 0)
+    for (values <- buffer) {
+      radiansMoved += Vec(values(0), values(1), values(2))
+    }
+    radiansMoved *= dt / 1000000f
+    radiansMoved /= buffer.size
 
-      if (currentSpeed.length > .1f) {
-        val csv = currentSpeed.coordinates.map(c => (c * 100).toInt).mkString(",")
-        currentConnection foreach (_.send(csv) onFailure handleFailure)
-        statusText.setText(s"Current speed (cm/s): $csv")
-      }
+    val csv = radiansMoved.toCsv()
+    statusText.setText(s"Radians moved: $csv")
+    currentConnection foreach (_.send(csv) onFailure handleFailure)
   }
+
+  def currentMicros = System.nanoTime / 1000
 
   def handleFailure: PartialFunction[Throwable, Unit] = {
     case ex: RuntimeException =>

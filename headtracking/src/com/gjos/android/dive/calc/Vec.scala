@@ -17,13 +17,17 @@ class Vec(private val coordinate: mutable.Buffer[Float]) {
 
   // Mutable ops
   def *=(scale: Float) = transform(coordinate(_) *= scale)
+  def /=(scale: Float) = transform(coordinate(_) /= scale)
   def +=(that: Vec) = (this fuse that)(_ + _)
   def *=(that: Vec) = (this fuse that)(_ * _)
+  def /=(that: Vec) = (this fuse that)(_ / _)
 
   // Immutable ops
   def *(scale: Float) = copy() *= scale
+  def /(scale: Float) = copy() /= scale
   def +(that: Vec) = copy() += that
   def *(that: Vec) = copy() *= that
+  def /(that: Vec) = copy() /= that
 
   def copy() = {
     val buffer = mutable.Buffer.empty[Float]
@@ -45,6 +49,8 @@ class Vec(private val coordinate: mutable.Buffer[Float]) {
   // The first rule of f is, you do not talk about f
   // After you try google, please ask them to support special characters!
   override def toString() = coordinate.map(f => f"$f%.1f").mkString("(", ", ", ")")
+
+  def toCsv(scale: Int = 100) = coordinate.map(c => (c * scale).toInt).mkString(",")
 }
 
 object Vec {

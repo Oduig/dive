@@ -6,9 +6,10 @@ import android.hardware.{Sensor, SensorManager, SensorEvent, SensorEventListener
 class SensorBroker(context: Context) extends SensorEventListener {
   private val sensorManager = context.getSystemService(Context.SENSOR_SERVICE).asInstanceOf[SensorManager]
 
-  val linearAcceleration = new LinearAccelerationSensor()
+  val accelerometer = new LinearAccelerationSensor()
+  val gyroscope = new GyroscopeSensor()
 
-  private val sensors = Set(linearAcceleration)
+  private val sensors = Set(gyroscope)
 
   def startListening() = registerSensorListeners()
   def stopListening() = unregisterSensorListeners()

@@ -4,7 +4,7 @@
     <string name="selectConnectionType">Select a connection type</string>
     <string name="selectAddress">Select an IP address (for TCP/UDP)</string>
     <string name="selectPort">Select a port (for TCP/UDP)</string>
-    <string name="defaultIp">192.168.1.170</string>
+    <string name="defaultIp">192.168.1.111</string>
     <string name="defaultPort">13337</string>
     <string name="connect">Connect</string>
     <string name="bluetooth">Bluetooth</string>

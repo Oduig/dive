@@ -20,12 +20,16 @@ object RcServerConsole extends App {
           |u - listen for UDP connection
           |b - listen for Bluetooth connection
           |d - disconnect
+          |p - increase sensitivity
+          |m - decrease sensitivity
           |h - help
           |q - quit""".stripMargin)
       case 't' :: cs => listenTcp(cs.mkString)
       case 'u' :: cs => listenUdp(cs.mkString)
       case 'b' :: cs => listenBluetooth(cs.mkString)
       case 'd' :: Nil => disconnect()
+      case 'p' :: Nil => increaseSensitivity()
+      case 'm' :: Nil => decreaseSensitivity()
       case 'q' :: Nil => quit()
       case _ => println("Say what?")
     }
@@ -53,14 +57,21 @@ object RcServerConsole extends App {
     println("Opening server socket...")
     connection = Some(listener)
     listener.open()
+    mouseMover.start()
     listener onReceive handleMessage
     println("Listening.")
   }
 
+  var calibrated = false
   private def handleMessage(content: String) {
-    println("Received: " + content)
-    val Array(x, y, _) = content.split(",")
-    mouseMover.move(x.toInt / 10, y.toInt / 10)
+    if (calibrated) {
+      println("Received: " + content)
+      val Array(x, y, _) = content.split(",")
+      mouseMover.move(x.toInt, -y.toInt)
+    } else {
+      println("Skipped: " + content)
+      calibrated = true
+    }
   }
 
   private def quit() {
@@ -70,6 +81,10 @@ object RcServerConsole extends App {
 
   private def disconnect() = {
     connection map (_.close)
+    mouseMover.stop()
     println("Disconnected.")
   }
+
+  private def increaseSensitivity() = println("New sensitivity: " + mouseMover.moreSensitive())
+  private def decreaseSensitivity() = println("New sensitivity: " + mouseMover.lessSensitive())
 }

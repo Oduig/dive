@@ -8,8 +8,8 @@ trait ListenerImpl extends Listener {
   private var connectionIsOpen = false
 
   final def open() = Future[Unit] {
-    openSafely()
     connectionIsOpen = true
+    openSafely()
   }
 
   final def close() = Future[Unit] {

@@ -17,7 +17,7 @@ class HeadTrackerUI extends RichActivity {
     this.setContentView(R.layout.main)
 
     connectButton.setOnClickListener(connectBtnClick)
-    sensorBroker.gyroscope.observable.buffer(10).subscribe(onOrientationChanged _)
+    sensorBroker.gyroscope.observable.buffer(3).subscribe(onOrientationChanged _)
   }
 
   private def connectButton: Button = find(R.id.connectButton)

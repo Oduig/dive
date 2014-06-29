@@ -1,8 +1,7 @@
 package com.gjos.android.dive.connectivity
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.blocking
-import scala.concurrent.Future
+import scala.concurrent.{Await, blocking, Future}
 import java.net.ServerSocket
 import java.io.{InputStreamReader, BufferedReader}
 import scala.annotation.tailrec
@@ -13,12 +12,10 @@ class TcpListener(protected val port: Int) extends ListenerImpl {
   var connection: Option[(ServerSocket, BufferedReader)] = None
   var subscribers = List[String => Unit]()
 
-  // TODO allow accepting socket a second time
   protected def openSafely() {
     val sock = new ServerSocket(port)
-    val stream = new BufferedReader(new InputStreamReader(sock.accept().getInputStream))
-    connection = Some((sock, stream))
-    pollWhileOpen
+    pollForClients(sock)
+    pollForData()
   }
 
   protected def closeSafely() = connection match {
@@ -35,15 +32,28 @@ class TcpListener(protected val port: Int) extends ListenerImpl {
     subscribers = handler :: subscribers
   }
 
-  @tailrec private def pollWhileOpen(): Unit = connection match {
-    case Some((_, stream)) =>
-      if (stream.ready()) {
-        val line = stream.readLine()
-        subscribers foreach (handle => handle(line))
-      } else {
-        blocking(Thread sleep 5.millisecond.toMillis)
+  private def pollForData(): Unit = Future {
+    println("Polling for data.")
+    while (isOpen) {
+      connection match {
+        case Some((_, stream)) if stream.ready() =>
+          val line = stream.readLine()
+          subscribers foreach (handle => handle(line))
+        case _ =>
+          blocking(Thread sleep 5.millisecond.toMillis)
       }
-      pollWhileOpen()
-    case _ =>
+    }
+    println("Stopped polling for data.")
+  }
+
+  private def pollForClients(sock: ServerSocket): Unit = Future {
+    while (isOpen) {
+      println("Waiting for client.")
+      val stream = new BufferedReader(new InputStreamReader(sock.accept().getInputStream))
+      connection map (_._2.close)
+      connection = Some((sock, stream))
+      blocking(Thread sleep 1.second.toMillis)
+    }
+    println("Stopped polling for clients.")
   }
 }

@@ -10,11 +10,10 @@ import scala.annotation.tailrec
 
 /**
  * Relatively move mouse position
- * Will smoothen out the mouse when move(x, y) is called, slowing the mouse to pixelsPerSecond
- * Move commands are queued if they arrive while a move is in progress (TODO make it adjust to new move immediately)
- * If there are no more move commands, will go idle for slackMs
+ * Will smoothen out the mouse when move(x, y) is called, smoothening the mouse by moving at most pixelsPerSecond
+ * If there are no more move commands, will go idle for slackMs to save the whale
  */
-class MouseMover(val slackMs: Long = 10.millis.toMillis, val pixelsPerSecond: Int = 1000) {
+class MouseMover(val slackMs: Long = 10.millis.toMillis, val pixelsPerSecond: Int = 4000) {
 
   private var sensitivity = 1f
   private var running = false
@@ -60,30 +59,26 @@ class MouseMover(val slackMs: Long = 10.millis.toMillis, val pixelsPerSecond: In
 
   private def update() {
     val startPos = MouseInfo.getPointerInfo.getLocation
-    val maxStep = .05
 
-    def step(move: Int) = if (move == 0) 0 else if (move > 0) Math.max((maxStep * move).toInt, 1) else Math.min((maxStep * move).toInt, 1)
-
-    @tailrec def iter(curX: Int, curY: Int, moveX: Int, moveY: Int): Unit = {
-      val (stepX, stepY) = if (moveX != 0 && moveY != 0) {
-        Math.abs(moveX).toFloat / math.abs(moveY) match {
-          case ratio if ratio > 2 => (step(moveX), 0)
-          case ratio if ratio > 0.5 => (step(moveX), step(moveY))
-          case _ => (0, step(moveY))
-        }
-      } else {
-        (step(moveX), step(moveY))
-      }
-      if (stepX != 0 || stepY != 0) {
-        robot.mouseMove(curX + stepX, curY + stepY)
+    @tailrec def iter(curX: Float, curY: Float, moveX: Float, moveY: Float): Unit = {
+      //println(s"cur: ($curX, $curY), move: ($moveX, $moveY)")
+      val largest = Math max (Math abs moveX, Math abs moveY)
+      if (largest >= 1) {
+        // Normalize
+        val stepX = moveX / largest
+        val stepY = moveY / largest
+        // The actual mousemove is in discrete steps
+        val discreteX = (curX + stepX).toInt
+        val discreteY = (curY + stepY).toInt
+        //println(s"Moving ($discreteX, $discreteY)")
+        robot.mouseMove(discreteX, discreteY)
         nanosleep(moveDelayNanos)
-        val todoX = dx.addAndGet(-stepX)
-        val todoY = dy.addAndGet(-stepY)
-        iter(curX + stepX, curY + stepY, todoX, todoY)
+        // Calculate new position and remaining move
+        iter(curX + stepX, curY + stepY, moveX - stepX + dx.getAndSet(0), moveY - stepY + dy.getAndSet(0))
       }
     }
 
-    iter(startPos.x, startPos.y, dx.get, dy.get)
+    iter(startPos.x, startPos.y, dx.getAndSet(0), dy.getAndSet(0))
   }
 
   @tailrec final def nanosleep(remaining: Long, previous: Long = System.nanoTime): Unit = {
@@ -91,7 +86,7 @@ class MouseMover(val slackMs: Long = 10.millis.toMillis, val pixelsPerSecond: In
       val _ = 3.14 * 9.1
       val t = System.nanoTime
       val dt = Math.max(t - previous, 0)
-      nanosleep(t, remaining - dt)
+      nanosleep(remaining - dt, t)
     }
   }
 }

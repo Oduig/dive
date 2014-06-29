@@ -53,7 +53,6 @@ object RcServerConsole extends App {
     println("Not implemented.")
   }
 
-  var calibrated = false
   private def connect(listener: Listener) {
     println("Opening server socket...")
     connection = Some(listener)
@@ -63,11 +62,12 @@ object RcServerConsole extends App {
     println("Listening.")
   }
 
+  var calibrated = false
   private def handleMessage(content: String) {
     if (calibrated) {
       println("Received: " + content)
       val Array(x, y, _) = content.split(",")
-      mouseMover.move(-x.toInt, y.toInt)
+      mouseMover.move(x.toInt, -y.toInt)
     } else {
       println("Skipped: " + content)
       calibrated = true

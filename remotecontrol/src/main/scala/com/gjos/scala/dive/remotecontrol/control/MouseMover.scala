@@ -58,27 +58,25 @@ class MouseMover(val slackMs: Long = 10.millis.toMillis, val pixelsPerSecond: In
   }
 
   private def update() {
-    val startPos = MouseInfo.getPointerInfo.getLocation
-
-    @tailrec def iter(curX: Float, curY: Float, moveX: Float, moveY: Float): Unit = {
-      //println(s"cur: ($curX, $curY), move: ($moveX, $moveY)")
+    @tailrec def iter(moveX: Float, moveY: Float, restX: Float=0, restY: Float=0): Unit = {
       val largest = Math max (Math abs moveX, Math abs moveY)
       if (largest >= 1) {
         // Normalize
         val stepX = moveX / largest
         val stepY = moveY / largest
         // The actual mousemove is in discrete steps
-        val discreteX = (curX + stepX).toInt
-        val discreteY = (curY + stepY).toInt
-        //println(s"Moving ($discreteX, $discreteY)")
-        robot.mouseMove(discreteX, discreteY)
+        val offset = MouseInfo.getPointerInfo.getLocation
+        val discreteX = (restX + stepX).toInt
+        val discreteY = (restY + stepY).toInt
+
+        robot.mouseMove(offset.x + discreteX, offset.y + discreteY)
         nanosleep(moveDelayNanos)
         // Calculate new position and remaining move
-        iter(curX + stepX, curY + stepY, moveX - stepX + dx.getAndSet(0), moveY - stepY + dy.getAndSet(0))
+        iter(moveX - stepX + dx.getAndSet(0), moveY - stepY + dy.getAndSet(0), restX + stepX - discreteX, restY + stepY - discreteY)
       }
     }
 
-    iter(startPos.x, startPos.y, dx.getAndSet(0), dy.getAndSet(0))
+    iter(dx.getAndSet(0), dy.getAndSet(0))
   }
 
   @tailrec final def nanosleep(remaining: Long, previous: Long = System.nanoTime): Unit = {

@@ -41,8 +41,7 @@ class BluetoothListener() extends ListenerImpl {
     val name = "Durovis Headtracking Server"
     val url = s"btspp://localhost:$uuid;name=$name;authenticate=false;encrypt=false;"
 
-    val local = LocalDevice.getLocalDevice()
-    local.setDiscoverable(DiscoveryAgent.GIAC)
+    LocalDevice.getLocalDevice.setDiscoverable(DiscoveryAgent.GIAC)
     val server = Connector.open(url).asInstanceOf[StreamConnectionNotifier]
     server
   }

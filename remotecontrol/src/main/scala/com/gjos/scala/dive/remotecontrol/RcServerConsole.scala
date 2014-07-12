@@ -55,7 +55,7 @@ object RcServerConsole extends App {
   }
 
   private def connect(listener: Listener) {
-    println("Opening server socket...")
+    println("Starting connection listener...")
     connection = Some(listener)
     listener.open()
     mouseMover.start()

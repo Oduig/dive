@@ -24,6 +24,8 @@ class MouseMover(val slackMs: Long = 10.millis.toMillis, val pixelsPerSecond: In
   private val dx = new AtomicInteger()
   private val dy = new AtomicInteger()
 
+  def position = MouseInfo.getPointerInfo.getLocation
+
   def start() {
     if (!running) {
       running = true
@@ -65,7 +67,7 @@ class MouseMover(val slackMs: Long = 10.millis.toMillis, val pixelsPerSecond: In
         val stepX = moveX / largest
         val stepY = moveY / largest
         // The actual mousemove is in discrete steps
-        val offset = MouseInfo.getPointerInfo.getLocation
+        val offset = position
         val discreteX = (restX + stepX).toInt
         val discreteY = (restY + stepY).toInt
 

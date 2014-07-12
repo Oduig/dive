@@ -1,4 +1,4 @@
-package com.gjos.android.dive.connectivity
+package com.gjos.scala.dive.remotecontrol.connectivity
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

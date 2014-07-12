@@ -63,7 +63,7 @@ class HeadTrackerUI extends RichActivity {
   private def createConnection() = radioGroup.getCheckedRadioButtonId match {
     case R.id.tcp => new TcpConnection(currentIp, currentPort)
     case R.id.udp => new UdpConnection(currentIp, currentPort)
-    case R.id.bluetooth => new BluetoothConnection
+    case R.id.bluetooth => new BluetoothConnection(currentIp)
   }
 
   private def uponConnect(result: Try[Unit]) = inUiThread {

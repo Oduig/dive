@@ -1,7 +1,7 @@
 package com.gjos.scala.dive.remotecontrol
 
 import scala.annotation.tailrec
-import com.gjos.android.dive.connectivity.{Listener, TcpListener, UdpListener, BluetoothListener}
+import com.gjos.scala.dive.remotecontrol.connectivity.{Listener, TcpListener, UdpListener, BluetoothListener}
 import com.gjos.scala.dive.remotecontrol.control.MouseMover
 
 object RcServerConsole extends App {
@@ -46,15 +46,16 @@ object RcServerConsole extends App {
   }
 
   private def listenUdp(args: String) {
-    println("Not implemented.")
+    val port = if (args.trim.size > 0) args.trim.toInt else 13337
+    connect(new UdpListener(port))
   }
 
   private def listenBluetooth(args: String) {
-    println("Not implemented.")
+    connect(new BluetoothListener())
   }
 
   private def connect(listener: Listener) {
-    println("Opening server socket...")
+    println("Starting connection listener...")
     connection = Some(listener)
     listener.open()
     mouseMover.start()

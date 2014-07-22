@@ -4,7 +4,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.blocking
 import scala.concurrent.Future
 import scala.concurrent.duration._
-import java.net.Socket
+import java.net.{InetSocketAddress, Socket}
 import java.io.{DataOutputStream, IOException}
 
 class TcpConnection(protected val ip: String, protected val port: Int) extends ConnectionImpl {
@@ -12,7 +12,8 @@ class TcpConnection(protected val ip: String, protected val port: Int) extends C
   var connection: Option[(Socket, DataOutputStream)] = None
 
   protected def openSafely() {
-    val sock = new Socket(ip, port)
+    val sock = new Socket()
+    sock.connect(new InetSocketAddress(ip, port), 3000)
     val stream = new DataOutputStream(sock.getOutputStream)
     connection = Some((sock, stream))
   }

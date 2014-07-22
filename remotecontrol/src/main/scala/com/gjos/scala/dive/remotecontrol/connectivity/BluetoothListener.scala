@@ -36,9 +36,9 @@ class BluetoothListener() extends ListenerImpl {
   }
 
   private def makeServer() = {
-    val uuid = new UUID(randomHex(32), false)
+    val uuid = new UUID("67fa17a0-0a8c-11e4-b7de-0002a5d5c51b", false)
 
-    val name = "Durovis Headtracking Server"
+    val name = "durovis-headtracking-server"
     val url = s"btspp://localhost:$uuid;name=$name;authenticate=false;encrypt=false;"
 
     LocalDevice.getLocalDevice.setDiscoverable(DiscoveryAgent.GIAC)
@@ -70,12 +70,5 @@ class BluetoothListener() extends ListenerImpl {
       blocking(Thread sleep 1.second.toMillis)
     }
     println("Stopped polling for clients.")
-  }
-
-
-  private def randomHex(length: Int) = {
-    val legalCharacters = "abcdef0123456789".toVector
-    val generated = List.fill(length)(legalCharacters(Random.nextInt(legalCharacters.size)))
-    generated.mkString
   }
 }

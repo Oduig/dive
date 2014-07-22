@@ -32,7 +32,7 @@ class RichActivity extends Activity {
 
   protected def inUiThread(statements: => Unit) = runOnUiThread {
     new Runnable() {
-      def run = statements
+      def run() = statements
     }
   }
 }

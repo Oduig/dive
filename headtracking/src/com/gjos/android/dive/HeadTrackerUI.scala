@@ -50,12 +50,12 @@ class HeadTrackerUI extends RichActivity {
     currentConnection = None
   }
 
-  private def uponConnecting() {
+  private def uponConnecting() = inUiThread {
     connectButton.setEnabled(false)
     toast("Connecting...")
   }
 
-  private def uponDisconnecting() {
+  private def uponDisconnecting() = inUiThread {
     connectButton.setEnabled(false)
     toast("Disconnecting...")
   }
@@ -63,7 +63,7 @@ class HeadTrackerUI extends RichActivity {
   private def createConnection() = radioGroup.getCheckedRadioButtonId match {
     case R.id.tcp => new TcpConnection(currentIp, currentPort)
     case R.id.udp => new UdpConnection(currentIp, currentPort)
-    case R.id.bluetooth => new BluetoothConnection(currentIp)
+    case R.id.bluetooth => new BluetoothConnection()
   }
 
   private def uponConnect(result: Try[Unit]) = inUiThread {

@@ -67,7 +67,7 @@ object RcServerConsole extends App {
     if (calibrated) {
       println("Received: " + content)
       val Array(x, y, _) = content.split(",")
-      mouseMover.move(x.toInt, -y.toInt)
+      mouseMover.move(-x.toInt, y.toInt)
     } else {
       println("Skipped: " + content)
       calibrated = true

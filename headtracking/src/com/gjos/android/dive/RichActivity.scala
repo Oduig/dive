@@ -17,7 +17,6 @@ class RichActivity extends Activity {
   protected def find[T](viewId: Int): T = findViewById(viewId).asInstanceOf[T]
 
   protected def toast(msg: String) = {
-    toaster.cancel()
     toaster.setText(msg)
     toaster.show()
   }

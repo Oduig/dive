@@ -1,8 +1,13 @@
 package com.gjos.scala.dive.remotecontrol
 
 import scala.annotation.tailrec
+import scala.concurrent.Await
+import scala.concurrent.ExecutionContext.Implicits.global
 import com.gjos.scala.dive.remotecontrol.connectivity.{Listener, TcpListener, UdpListener, BluetoothListener}
 import com.gjos.scala.dive.remotecontrol.control.MouseMover
+
+import scala.concurrent.duration._
+import scala.util.{Success, Failure}
 
 object RcServerConsole extends App {
   println("Remote control server app for Durovis Dive.")
@@ -56,11 +61,21 @@ object RcServerConsole extends App {
 
   private def connect(listener: Listener) {
     println("Starting connection listener...")
-    connection = Some(listener)
-    listener.open()
-    mouseMover.start()
-    listener onReceive handleMessage
-    println("Listening.")
+    val startListening = listener.open()
+    Await.ready(startListening, 3.seconds)
+    startListening.value match {
+      case Some(Success(_)) =>
+        listener onReceive handleMessage
+        connection = Some(listener)
+        mouseMover.start()
+        println("Listening.")
+      case Some(Failure(ex)) =>
+        connection = None
+        println("Failed to start server!\n Message: " + ex.getMessage)
+      case None =>
+        connection = None
+        println("Timeout when attempting to start server.")
+    }
   }
 
   var calibrated = false
@@ -81,8 +96,8 @@ object RcServerConsole extends App {
   }
 
   private def disconnect() = {
-    connection map (_.close)
     mouseMover.stop()
+    connection map (_.close)
     println("Disconnected.")
   }
 

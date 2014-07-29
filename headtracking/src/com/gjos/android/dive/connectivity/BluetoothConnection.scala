@@ -18,7 +18,7 @@ class BluetoothConnection() extends ConnectionImpl {
   protected def openSafely() {
     val adapter = BluetoothAdapter.getDefaultAdapter
     val device = adapter.getRemoteDevice("f4:b7:e2:fc:8e:f6".toUpperCase)
-    val uuid = "67fa17a0-0a8c-11e4-b7de-0002a5d5c51b"
+    val uuid = "00001101-0000-1000-8000-00805F9B34FB"//"67fa17a0-0a8c-11e4-b7de-0002a5d5c51b"
     val btSocket = device.createRfcommSocketToServiceRecord(UUID.fromString(uuid))
     adapter.cancelDiscovery()
     btSocket.connect()

@@ -1,7 +1,8 @@
 package com.gjos.android.dive
 
 import android.app.Activity
-import android.widget.Toast
+import android.widget.RadioGroup.OnCheckedChangeListener
+import android.widget.{RadioGroup, Toast}
 import scala.concurrent.duration._
 import android.view.{Gravity, ViewGroup, View}
 import scala.language.implicitConversions
@@ -23,6 +24,10 @@ class RichActivity extends Activity {
 
   implicit protected def callbackToClickListener(callback: => Unit) = new View.OnClickListener() {
     def onClick(v: View) = callback
+  }
+
+  implicit protected def callbackToCheckedChangeListener(callback: Int => Unit) = new OnCheckedChangeListener() {
+    def onCheckedChanged(rg: RadioGroup, index: Int): Unit = callback(index)
   }
 
   protected def children(v: ViewGroup): Vector[View] = {

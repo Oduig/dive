@@ -1,6 +1,7 @@
 package com.gjos.android.dive
 
 import android.os.Bundle
+import android.view.View
 import android.widget.{TextView, EditText, RadioGroup, Button}
 import com.gjos.android.dive.calc.Vec
 import com.gjos.android.dive.connectivity._
@@ -16,6 +17,7 @@ class HeadTrackerUI extends RichActivity {
     super.onCreate(savedState)
     this.setContentView(R.layout.main)
 
+    radioGroup.setOnCheckedChangeListener(connectionTypeChanged)
     connectButton.setOnClickListener(connectBtnClick)
     sensorBroker.gyroscope.observable.buffer(3).subscribe(onOrientationChanged _)
   }
@@ -24,12 +26,30 @@ class HeadTrackerUI extends RichActivity {
   private def radioGroup: RadioGroup = find(R.id.connectionTypeGroup)
   private def statusText: TextView = find(R.id.statusText)
 
-  private def currentIp: String = find[EditText](R.id.ipEdit).getText.toString
+  private def currentIpAddress: String = find[EditText](R.id.ipEdit).getText.toString
+  private def currentBluetoothAddress: String = find[EditText](R.id.bluetoothEdit).getText.toString
 
-  // Always works since EditText type is set to number
+  // Casting to Int always works since EditText type is set to number
   private def currentPort: Int = find[EditText](R.id.portEdit).getText.toString.toInt
 
   var currentConnection: Option[Connection] = None
+
+  def connectionTypeChanged: Int => Unit = {
+    case R.id.tcp | R.id.udp =>
+      find[EditText](R.id.bluetoothEdit).setVisibility(View.GONE)
+      find[EditText](R.id.bluetoothLabel).setVisibility(View.GONE)
+      find[EditText](R.id.ipEdit).setVisibility(View.VISIBLE)
+      find[EditText](R.id.ipLabel).setVisibility(View.VISIBLE)
+      find[EditText](R.id.portEdit).setVisibility(View.VISIBLE)
+      find[EditText](R.id.portLabel).setVisibility(View.VISIBLE)
+    case R.id.bluetooth =>
+      find[EditText](R.id.bluetoothEdit).setVisibility(View.VISIBLE)
+      find[EditText](R.id.bluetoothLabel).setVisibility(View.VISIBLE)
+      find[EditText](R.id.ipEdit).setVisibility(View.GONE)
+      find[EditText](R.id.ipLabel).setVisibility(View.GONE)
+      find[EditText](R.id.portEdit).setVisibility(View.GONE)
+      find[EditText](R.id.portLabel).setVisibility(View.GONE)
+  }
 
   def connectBtnClick() = currentConnection match {
     case Some(connection) if connection.isOpen => startDisconnect()
@@ -61,9 +81,9 @@ class HeadTrackerUI extends RichActivity {
   }
 
   private def createConnection() = radioGroup.getCheckedRadioButtonId match {
-    case R.id.tcp => new TcpConnection(currentIp, currentPort)
-    case R.id.udp => new UdpConnection(currentIp, currentPort)
-    case R.id.bluetooth => new BluetoothConnection()
+    case R.id.tcp => new TcpConnection(currentIpAddress, currentPort)
+    case R.id.udp => new UdpConnection(currentIpAddress, currentPort)
+    case R.id.bluetooth => new BluetoothConnection(currentBluetoothAddress)
   }
 
   private def uponConnect(result: Try[Unit]) = inUiThread {

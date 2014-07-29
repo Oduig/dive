@@ -36,12 +36,12 @@ class BluetoothListener() extends ListenerImpl {
   }
 
   private def makeServer() = {
-    val uuid = new UUID(randomHex(32), false)
+    // Android bluetooth UUID that works
+    val uuid = new UUID("1101", true)
 
-    val name = "Durovis Headtracking Server"
+    val name = "durovis-headtracking-server"
     val url = s"btspp://localhost:$uuid;name=$name;authenticate=false;encrypt=false;"
 
-    LocalDevice.getLocalDevice.setDiscoverable(DiscoveryAgent.GIAC)
     val server = Connector.open(url).asInstanceOf[StreamConnectionNotifier]
     server
   }
@@ -70,12 +70,5 @@ class BluetoothListener() extends ListenerImpl {
       blocking(Thread sleep 1.second.toMillis)
     }
     println("Stopped polling for clients.")
-  }
-
-
-  private def randomHex(length: Int) = {
-    val legalCharacters = "abcdef0123456789".toVector
-    val generated = List.fill(length)(legalCharacters(Random.nextInt(legalCharacters.size)))
-    generated.mkString
   }
 }

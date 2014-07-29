@@ -8,17 +8,16 @@ import android.bluetooth.{BluetoothSocket, BluetoothAdapter}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.blocking
 import scala.concurrent.Future
-import scala.concurrent.duration._
-import scala.util.Random
 
-class BluetoothConnection(val address: String) extends ConnectionImpl {
+class BluetoothConnection(val bluetoothAddress: String) extends ConnectionImpl {
 
   var connection: Option[(BluetoothSocket, DataOutputStream)] = None
 
   protected def openSafely() {
     val adapter = BluetoothAdapter.getDefaultAdapter
-    val device = adapter.getRemoteDevice(address)
-    val uuid = randomHex(32)
+    val device = adapter.getRemoteDevice(bluetoothAddress.toUpperCase)
+    // Android bluetooth UUID that works
+    val uuid = "00001101-0000-1000-8000-00805F9B34FB"
     val btSocket = device.createRfcommSocketToServiceRecord(UUID.fromString(uuid))
     adapter.cancelDiscovery()
     btSocket.connect()
@@ -44,9 +43,4 @@ class BluetoothConnection(val address: String) extends ConnectionImpl {
 
   }
 
-  private def randomHex(length: Int) = {
-    val legalCharacters = "abcdef0123456789".toVector
-    val generated = List.fill(length)(legalCharacters(Random.nextInt(legalCharacters.size)))
-    generated.mkString
-  }
 }

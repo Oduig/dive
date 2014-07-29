@@ -2,9 +2,11 @@
 <resources>
 	<string name="appName">Dive head tracker client</string>
     <string name="selectConnectionType">Select a connection type</string>
-    <string name="selectAddress">Select an IP address (for TCP/UDP)</string>
+    <string name="selectIpAddress">Select an IP address</string>
+    <string name="selectBluetoothAddress">Select a Bluetooth address</string>
     <string name="selectPort">Select a port (for TCP/UDP)</string>
-    <string name="defaultIp">192.168.1.111</string>
+    <string name="defaultIpAddress">192.168.1.111</string>
+    <string name="defaultBluetoothAddress">f4:b7:e2:fc:8e:f6</string>
     <string name="defaultPort">13337</string>
     <string name="connect">Connect</string>
     <string name="bluetooth">Bluetooth</string>

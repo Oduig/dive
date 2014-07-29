@@ -1,7 +1,8 @@
 package com.gjos.android.dive
 
 import android.app.Activity
-import android.widget.Toast
+import android.widget.RadioGroup.OnCheckedChangeListener
+import android.widget.{RadioGroup, Toast}
 import scala.concurrent.duration._
 import android.view.{Gravity, ViewGroup, View}
 import scala.language.implicitConversions
@@ -17,7 +18,6 @@ class RichActivity extends Activity {
   protected def find[T](viewId: Int): T = findViewById(viewId).asInstanceOf[T]
 
   protected def toast(msg: String) = {
-    toaster.cancel()
     toaster.setText(msg)
     toaster.show()
   }
@@ -26,13 +26,17 @@ class RichActivity extends Activity {
     def onClick(v: View) = callback
   }
 
+  implicit protected def callbackToCheckedChangeListener(callback: Int => Unit) = new OnCheckedChangeListener() {
+    def onCheckedChanged(rg: RadioGroup, index: Int): Unit = callback(index)
+  }
+
   protected def children(v: ViewGroup): Vector[View] = {
     (0 until v.getChildCount).toVector map v.getChildAt
   }
 
   protected def inUiThread(statements: => Unit) = runOnUiThread {
     new Runnable() {
-      def run = statements
+      def run() = statements
     }
   }
 }

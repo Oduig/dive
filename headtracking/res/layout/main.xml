@@ -41,17 +41,18 @@
 
 
     <TextView
+            android:id="@+id/ipLabel"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/selectAddress" />
+            android:text="@string/selectIpAddress" />
     <EditText android:id="@+id/ipEdit"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/defaultIp"
+            android:text="@string/defaultIpAddress"
             android:inputType="text" />
 
-
     <TextView
+            android:id="@+id/portLabel"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/selectPort" />
@@ -59,7 +60,21 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/defaultPort"
-            android:inputType="numberDecimal"/>
+            android:inputType="numberDecimal" />
+
+    <TextView
+            android:id="@+id/bluetoothLabel"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/selectBluetoothAddress"
+            android:visibility="gone" />
+    <EditText android:id="@+id/bluetoothEdit"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:text="@string/defaultBluetoothAddress"
+              android:inputType="text"
+              android:visibility="gone" />
+
 
     <Button android:id="@+id/connectButton"
             android:layout_width="fill_parent"

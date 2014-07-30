@@ -32,12 +32,16 @@ class UdpListener(protected val port: Int) extends ListenerImpl {
 
   private def pollForData(sock: DatagramSocket): Unit = Future {
     println("Polling for data.")
-    val buf = "(123,123,123)\n".getBytes
+    val pattern = """-?\d+,-?\d+,-?\d+""".r
+    val buf = Array.fill[Byte](128)(0)
     val packet = new DatagramPacket(buf, buf.length)
     while (isOpen) {
       sock.receive(packet)
-      val line = new String(packet.getData)
-      subscribers foreach (handle => handle(line))
+      val line = new String(packet.getData.takeWhile(_ != '\n'))
+      line match {
+        case pattern() => subscribers foreach (handle => handle(line))
+        case _ => println("Bad packet: " + line)
+      }
     }
     println("Stopped polling for data.")
   }

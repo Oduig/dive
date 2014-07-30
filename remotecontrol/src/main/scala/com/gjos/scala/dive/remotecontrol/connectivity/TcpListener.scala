@@ -1,10 +1,9 @@
 package com.gjos.scala.dive.remotecontrol.connectivity
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{Await, blocking, Future}
+import scala.concurrent.{blocking, Future}
 import java.net.ServerSocket
 import java.io.{InputStreamReader, BufferedReader}
-import scala.annotation.tailrec
 import scala.concurrent.duration._
 
 class TcpListener(protected val port: Int) extends ListenerImpl {
@@ -49,7 +48,7 @@ class TcpListener(protected val port: Int) extends ListenerImpl {
   private def pollForClients(sock: ServerSocket): Unit = Future {
     while (isOpen) {
       println("Waiting for client.")
-      val stream = new BufferedReader(new InputStreamReader(sock.accept().getInputStream))
+      val stream = new BufferedReader(new InputStreamReader(sock.accept().getInputStream), 128)
       connection map (_._2.close)
       connection = Some((sock, stream))
       blocking(Thread sleep 1.second.toMillis)

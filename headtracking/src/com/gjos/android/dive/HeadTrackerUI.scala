@@ -5,50 +5,76 @@ import android.view.View
 import android.widget.{TextView, EditText, RadioGroup, Button}
 import com.gjos.android.dive.calc.Vec
 import com.gjos.android.dive.connectivity._
+import com.gjos.android.dive.persistence.{UiSettings, SQLite}
 import com.gjos.android.dive.sensing.SensorBroker
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Try, Failure, Success}
-import scala.concurrent.duration._
 
 class HeadTrackerUI extends RichActivity {
   lazy val sensorBroker = new SensorBroker(this)
+  lazy val database = new SQLite(getString(R.string.dbName), getString(R.string.dbVersion).toInt, getApplicationContext)
 
   override def onCreate(savedState: Bundle) {
     super.onCreate(savedState)
     this.setContentView(R.layout.main)
+
+    database.fetchUiSettings() map (_ map restoreSettings)
 
     radioGroup.setOnCheckedChangeListener(connectionTypeChanged)
     connectButton.setOnClickListener(connectBtnClick)
     sensorBroker.gyroscope.observable.buffer(3).subscribe(onOrientationChanged _)
   }
 
+  private def restoreSettings(settings: UiSettings): Unit = settings match {
+    case UiSettings(connectionType, ipAddress, port, btAddress) =>
+      radioGroup.check(connectionType)
+      ipEdit.setText(ipAddress)
+      portEdit.setText(port)
+      bluetoothEdit.setText(btAddress)
+  }
+
+  private def saveSettings(): Unit = {
+    database.saveUiSettings(UiSettings(
+      radioGroup.getCheckedRadioButtonId,
+      currentIpAddress,
+      currentPort,
+      currentBluetoothAddress
+    ))
+  }
+
   private def connectButton: Button = find(R.id.connectButton)
   private def radioGroup: RadioGroup = find(R.id.connectionTypeGroup)
   private def statusText: TextView = find(R.id.statusText)
+  private def ipEdit: EditText = find(R.id.ipEdit)
+  private def ipLabel: TextView = find(R.id.ipLabel)
+  private def portEdit: EditText = find(R.id.portEdit)
+  private def portLabel: TextView = find(R.id.portLabel)
+  private def bluetoothEdit: EditText = find(R.id.ipEdit)
+  private def bluetoothLabel: TextView = find(R.id.bluetoothLabel)
 
-  private def currentIpAddress: String = find[EditText](R.id.ipEdit).getText.toString
-  private def currentBluetoothAddress: String = find[EditText](R.id.bluetoothEdit).getText.toString
+  private def currentIpAddress: String = ipEdit.getText.toString
+  private def currentBluetoothAddress: String = bluetoothEdit.getText.toString
 
   // Casting to Int always works since EditText type is set to number
-  private def currentPort: Int = find[EditText](R.id.portEdit).getText.toString.toInt
+  private def currentPort: Int = portEdit.getText.toString.toInt
 
   var currentConnection: Option[Connection] = None
 
   def connectionTypeChanged: Int => Unit = {
-    case R.id.tcp | R.id.udp =>
-      find[EditText](R.id.bluetoothEdit).setVisibility(View.GONE)
-      find[EditText](R.id.bluetoothLabel).setVisibility(View.GONE)
-      find[EditText](R.id.ipEdit).setVisibility(View.VISIBLE)
-      find[EditText](R.id.ipLabel).setVisibility(View.VISIBLE)
-      find[EditText](R.id.portEdit).setVisibility(View.VISIBLE)
-      find[EditText](R.id.portLabel).setVisibility(View.VISIBLE)
-    case R.id.bluetooth =>
-      find[EditText](R.id.bluetoothEdit).setVisibility(View.VISIBLE)
-      find[EditText](R.id.bluetoothLabel).setVisibility(View.VISIBLE)
-      find[EditText](R.id.ipEdit).setVisibility(View.GONE)
-      find[EditText](R.id.ipLabel).setVisibility(View.GONE)
-      find[EditText](R.id.portEdit).setVisibility(View.GONE)
-      find[EditText](R.id.portLabel).setVisibility(View.GONE)
+    case R.id.tcp | R.id.udp => toggleIpUi()
+    case R.id.bluetooth => toggleBluetoothUi()
+  }
+
+  private def toggleIpUi() = toggleConnectUi(ipMode=true)
+  private def toggleBluetoothUi() = toggleConnectUi(ipMode=false)
+  private def toggleConnectUi(ipMode: Boolean) {
+    val (ipVisibility, bluetoothVisibility) = if (ipMode) (View.VISIBLE, View.GONE) else (View.GONE, View.VISIBLE)
+    bluetoothEdit.setVisibility(bluetoothVisibility)
+    bluetoothLabel.setVisibility(bluetoothVisibility)
+    ipEdit.setVisibility(ipVisibility)
+    ipLabel.setVisibility(ipVisibility)
+    portEdit.setVisibility(ipVisibility)
+    portLabel.setVisibility(ipVisibility)
   }
 
   def connectBtnClick() = currentConnection match {

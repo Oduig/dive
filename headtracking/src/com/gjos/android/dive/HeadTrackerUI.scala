@@ -176,8 +176,14 @@ class HeadTrackerUI extends RichActivity {
 
     val csv = radiansMoved.toCsv()
     statusText.setText(s"Radians moved: $csv")
-    currentConnection foreach (_.send(csv))
+    currentConnection foreach (_.send(csv) onFailure handleFailure)
   }
 
   def currentMicros = System.nanoTime / 1000
+
+  def handleFailure: PartialFunction[Throwable, Unit] = {
+    case ex: RuntimeException =>
+      startDisconnect()
+      statusText.setText(s"Failed sending: ${ex.getMessage}")
+  }
 }

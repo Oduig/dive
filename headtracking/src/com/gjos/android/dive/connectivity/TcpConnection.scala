@@ -3,7 +3,6 @@ package com.gjos.android.dive.connectivity
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.blocking
 import scala.concurrent.Future
-import scala.concurrent.duration._
 import java.net.{InetSocketAddress, Socket}
 import java.io.{DataOutputStream, IOException}
 
@@ -27,7 +26,7 @@ class TcpConnection(protected val ip: String, protected val port: Int) extends C
 
   def send(line: String) = connection match {
     case Some((_, stream)) =>
-      Future(stream writeBytes (line + '\n'))
+      stream writeBytes (line + '\n')
     case None =>
       throw new IOException("Cannot send TCP data while disconnected")
   }

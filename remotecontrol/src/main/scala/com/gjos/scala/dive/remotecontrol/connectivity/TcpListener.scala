@@ -25,7 +25,7 @@ class TcpListener(protected val port: Int) extends ListenerImpl {
     case _ =>
   }
 
-  def send(bs: String) = Future {
+  def send(bs: String) = {
   }
 
   def onReceive(handler: String => Unit) {

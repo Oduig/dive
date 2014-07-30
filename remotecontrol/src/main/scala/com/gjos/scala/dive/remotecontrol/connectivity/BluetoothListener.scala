@@ -15,7 +15,7 @@ class BluetoothListener() extends ListenerImpl {
   var connection: Option[(StreamConnectionNotifier, BufferedReader)] = None
   var subscribers = List[String => Unit]()
 
-  def send(bs: String) = Future {
+  def send(bs: String) = {
   }
 
   def onReceive(handler: String => Unit) {

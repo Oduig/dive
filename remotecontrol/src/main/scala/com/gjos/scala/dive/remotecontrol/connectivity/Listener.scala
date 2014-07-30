@@ -8,7 +8,7 @@ trait Listener {
 
   def isOpen(): Boolean
 
-  def send(bs: String): Future[Unit]
+  def send(bs: String): Unit
 
   def onReceive(handler: String => Unit): Unit
 

@@ -5,6 +5,7 @@
     <string name="selectIpAddress">Select an IP address</string>
     <string name="selectBluetoothAddress">Select a Bluetooth address</string>
     <string name="selectPort">Select a port (for TCP/UDP)</string>
+    <string name="defaultConnectionType">0</string>
     <string name="defaultIpAddress">192.168.1.111</string>
     <string name="defaultBluetoothAddress">f4:b7:e2:fc:8e:f6</string>
     <string name="defaultPort">13337</string>
@@ -12,6 +13,7 @@
     <string name="bluetooth">Bluetooth</string>
     <string name="udp">UDP</string>
     <string name="tcp">TCP</string>
+    <string name="resetDefaults">Reset to defaults</string>
     <string name="dbName">dive-headtracker-persistence</string>
     <string name="dbVersion">1</string>
 </resources>

@@ -1,7 +1,7 @@
 package com.gjos.android.dive
 
 import android.os.Bundle
-import android.view.View
+import android.view.{MenuItem, Menu, View}
 import android.widget.{TextView, EditText, RadioGroup, Button}
 import com.gjos.android.dive.calc.Vec
 import com.gjos.android.dive.connectivity._
@@ -13,33 +13,57 @@ import scala.util.{Try, Failure, Success}
 class HeadTrackerUI extends RichActivity {
   lazy val sensorBroker = new SensorBroker(this)
   lazy val database = new SQLite(getString(R.string.dbName), getString(R.string.dbVersion).toInt, getApplicationContext)
+  lazy val defaultSettings = UiSettings(
+    getString(R.string.defaultConnectionType).toInt,
+    getString(R.string.defaultIpAddress),
+    getString(R.string.defaultPort).toInt,
+    getString(R.string.defaultBluetoothAddress)
+  )
 
   override def onCreate(savedState: Bundle) {
     super.onCreate(savedState)
     this.setContentView(R.layout.main)
+    defaultSettings
 
-    database.fetchUiSettings() map (_ map restoreSettings)
+    database.fetchUiSettings() onComplete restoreSettings
 
     radioGroup.setOnCheckedChangeListener(connectionTypeChanged)
     connectButton.setOnClickListener(connectBtnClick)
     sensorBroker.gyroscope.observable.buffer(3).subscribe(onOrientationChanged _)
   }
 
-  private def restoreSettings(settings: UiSettings): Unit = settings match {
-    case UiSettings(connectionType, ipAddress, port, btAddress) =>
-      radioGroup.check(connectionType)
-      ipEdit.setText(ipAddress)
-      portEdit.setText(port)
-      bluetoothEdit.setText(btAddress)
+  override def onCreateOptionsMenu(menu: Menu): Boolean = {
+    getMenuInflater.inflate(R.menu.main, menu)
+    true
+  }
+
+  override def onOptionsItemSelected(item: MenuItem) = item.getItemId match {
+    case R.id.resetDefaults =>
+      restoreSettings(Success(Some(defaultSettings)))
+      super.onOptionsItemSelected(item)
+  }
+
+  private def restoreSettings(settingsOpt: Try[Option[UiSettings]]): Unit = inUiThread {
+    settingsOpt match {
+      case Success(uiSettingsOpt) =>
+        val UiSettings(connectionType, ipAddress, port, btAddress) = uiSettingsOpt getOrElse defaultSettings
+        radioGroup.check(radioGroup.getChildAt(connectionType).getId)
+        ipEdit.setText(ipAddress)
+        portEdit.setText(port.toString)
+        bluetoothEdit.setText(btAddress)
+      case Failure(ex) => toast("Error while restoring settings: " + ex.getMessage)
+    }
   }
 
   private def saveSettings(): Unit = {
     database.saveUiSettings(UiSettings(
-      radioGroup.getCheckedRadioButtonId,
+      currentConnectionTypeIndex,
       currentIpAddress,
       currentPort,
       currentBluetoothAddress
-    ))
+    )) onFailure {
+      case ex => inUiThread(toast("Error while saving settings: " + ex.getMessage))
+    }
   }
 
   private def connectButton: Button = find(R.id.connectButton)
@@ -49,14 +73,14 @@ class HeadTrackerUI extends RichActivity {
   private def ipLabel: TextView = find(R.id.ipLabel)
   private def portEdit: EditText = find(R.id.portEdit)
   private def portLabel: TextView = find(R.id.portLabel)
-  private def bluetoothEdit: EditText = find(R.id.ipEdit)
+  private def bluetoothEdit: EditText = find(R.id.bluetoothEdit)
   private def bluetoothLabel: TextView = find(R.id.bluetoothLabel)
 
+  private def currentConnectionTypeIndex = radioGroup.indexOfChild(radioGroup.findViewById(radioGroup.getCheckedRadioButtonId))
   private def currentIpAddress: String = ipEdit.getText.toString
   private def currentBluetoothAddress: String = bluetoothEdit.getText.toString
 
-  // Casting to Int always works since EditText type is set to number
-  private def currentPort: Int = portEdit.getText.toString.toInt
+  private def currentPort: Int = Try(portEdit.getText.toString.toInt) getOrElse 0
 
   var currentConnection: Option[Connection] = None
 
@@ -83,6 +107,7 @@ class HeadTrackerUI extends RichActivity {
   }
 
   protected def startConnect() {
+    saveSettings()
     val connection = createConnection()
     currentConnection = Some(connection)
     uponConnecting()

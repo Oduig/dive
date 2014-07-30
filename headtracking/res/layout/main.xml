@@ -8,7 +8,7 @@
 <LinearLayout android:id="@+id/linearLayout"
               android:orientation="vertical"
               android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
+              android:layout_height="wrap_content"
               android:focusable="true"
               android:focusableInTouchMode="true"
               android:padding="20dp">
@@ -48,7 +48,7 @@
     <EditText android:id="@+id/ipEdit"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/defaultIpAddress"
+            android:text=""
             android:inputType="text" />
 
     <TextView
@@ -59,7 +59,7 @@
     <EditText android:id="@+id/portEdit"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/defaultPort"
+            android:text=""
             android:inputType="numberDecimal" />
 
     <TextView
@@ -71,7 +71,7 @@
     <EditText android:id="@+id/bluetoothEdit"
               android:layout_width="fill_parent"
               android:layout_height="wrap_content"
-              android:text="@string/defaultBluetoothAddress"
+              android:text=""
               android:inputType="text"
               android:visibility="gone" />
 

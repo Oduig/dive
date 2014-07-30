@@ -40,19 +40,16 @@ class SQLite(dbName: String, version: Int, context: Context) extends SQLiteOpenH
 
   def fetchUiSettings(): Future[Option[UiSettings]] = Future {
     val query = fetchUiSettingsQuery
-    blocking {
-      val cursor = getReadableDatabase.rawQuery(query, Array.empty)
-      val hasNext = cursor.moveToNext()
-      if (hasNext) {
-        Some(UiSettings(
-          cursor.getInt(cursor getColumnIndex "connection_type"),
-          cursor.getString(cursor getColumnIndex "ip_address"),
-          cursor.getInt(cursor getColumnIndex "port"),
-          cursor.getString(cursor getColumnIndex "bluetooth_address")
-        ))
-      } else {
-        None
-      }
+    val cursor = blocking(getReadableDatabase.rawQuery(query, Array.empty))
+    if (cursor.moveToNext()) {
+      Some(UiSettings(
+        cursor.getInt(cursor getColumnIndex "connection_type"),
+        cursor.getString(cursor getColumnIndex "ip_address"),
+        cursor.getInt(cursor getColumnIndex "port"),
+        cursor.getString(cursor getColumnIndex "bluetooth_address")
+      ))
+    } else {
+      None
     }
   }
 

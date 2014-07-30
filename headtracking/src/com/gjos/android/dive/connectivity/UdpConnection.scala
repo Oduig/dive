@@ -2,11 +2,13 @@ package com.gjos.android.dive.connectivity
 
 import java.io.IOException
 import java.net.{InetAddress, DatagramSocket, DatagramPacket}
-import scala.concurrent.blocking
+import scala.concurrent.{Future, blocking}
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class UdpConnection(protected val ip: String, protected val port: Int) extends ConnectionImpl {
 
   private val ipAddress = InetAddress.getByName(ip)
+  private val packet = new DatagramPacket(Array.empty[Byte], 0, ipAddress, port)
   var connection: Option[DatagramSocket] = None
 
   protected def openSafely() {
@@ -24,8 +26,9 @@ class UdpConnection(protected val ip: String, protected val port: Int) extends C
   def send(line: String) = connection match {
     case Some(sock) =>
       val bytes = (line + '\n').getBytes
-      val packet = new DatagramPacket(bytes, bytes.length, ipAddress, port)
-      sock send packet
+      packet setData bytes
+      packet setLength bytes.length
+      Future(sock send packet)
     case None =>
       throw new IOException("Cannot send TCP data while disconnected")
   }

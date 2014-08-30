@@ -13,7 +13,7 @@ import scala.annotation.tailrec
  * Will smoothen out the mouse when move(x, y) is called, smoothening the mouse by moving at most pixelsPerSecond
  * If there are no more move commands, will go idle for slackMs to save the whale
  */
-class MouseMover(val slackMs: Long = 10.millis.toMillis, val pixelsPerSecond: Int = 4000) {
+class MouseMover(val slackMs: Long = 10.millis.toMillis, val pixelsPerSecond: Int = 8000) {
 
   private var sensitivity = 1f
   private var running = false

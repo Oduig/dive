@@ -1,7 +1,7 @@
-# Dive tools
+# Dive VR for PC
 
-A company called [Durovis](https://www.durovis.com) recently created a VR headset known as **Dive**. What's special about this headset is that it uses a smartphone as a side-by-side 3D screen.
-Some dedicated apps have been created, but they do not work on all phones and their potential is limited due to the limited graphics hardware.
+A company called [Durovis](https://www.durovis.com) created a VR headset known as **Dive**. What's special about this headset is that it uses a smartphone as a side-by-side 3D screen.
+Some dedicated apps have been created, but they are limited by smartphone apps and performance.
 
 
 Goal
@@ -9,20 +9,40 @@ Goal
 My idea is to use the Dive in combination with a remote-desktop viewer like [Splashtop](http://www.splashtop.com) to watch and participate in 3D content without the limitations of smartphone hardware.
 This would allow one to play e.g. Portal or FPS games while wearing the Dive.
 
-One step further is to also control the PC game using the smartphone. For example, controls could be:
-* Look around for mouse control
-* Use a slide clicker to control left and right mouse button
-* Lean forward/left/right/back to walk
-* Jump to jump
-
-Challenges
------
-Remote viewing the PC seems easy. The tricky bit will be extracting accurate information from the phone's sensors and using it to control a PC, without too much latency.
+There is a reason why most VR headsets, including the Oculus Rift, require a cable attached to your computer. 
+It seems like if they have latency issues with dedicated hardware, I could never accomplish the same thing with my phone. 
+But hey, how do we know if we don't try?
 
 Progress
 -----
-This project is an experiment conducted in my free time. It will likely be a while before it is usable.
+
+What I have achieved so far:
+
+* Use Splashtop to remote-view your PC screen. It's free for this purpose. Make sure that you:
+	* Are close to your router.
+	* Have set the Splashtop app's mode to *smooth* rather than *sharp*.
+	* Open a port on your firewall so the signal stays in your LAN (for latency).
+	* Streaming 1080p takes about 50 Mbit. Wireless 802.11n is recommended, 802.11g is the minimum. You do not need a fast internet connection.
+* Use the client app on Android together with the server app, and connect with one of:
+	* UDP, straightforward.
+	* Bluetooth. I implemented it so that the Android app acts as the client. Make sure you enter your devices' bluetooth IDs into the program.
+	* TCP. At the moment, it is *really* slow, so I recommend the other two.
+* Try or buy Tridef 3D. It works on both NVIDIA and ATI cards, and allows you to render modern off-the-shelf games in 3D side-by-side mode.
+* Buy an Xbox360 controller for PC, or use your own. Top tip for minimum entanglement: it should be wireless.
+
+What's on my todo list:
+
+* Improve the latency of TCP
+* Test if bluetooth and UDP can be made even faster and less resource intensive.
+* Find out why, after some minutes of playtime, the game on the PC starts lagging.
+* See if there is any way to fix vertical drift. Horizontal drift is OK since you don't really notice which way you face, but looking up while your character is looking down can be a bit annoying. Especially when jumping through portals. Right now, I use the Xbox controller every so often to correct drift.
+* See if I can use the Z axis of the gyro so that it tilts the screen when you tilt your head.
+* Lean forward/left/right/back to walk
+* Jump to jump
 
 License
 -----
-The code may be used under the [Apache License, Version 2.0](http://opensource.org/licenses/Apache-2.0) 
+This project is an experiment conducted in my free time. I don't think I will ever do an official release for non-developers.
+If you want to use it, grab the code and compile it yourself - it's a standard SBT project, so it should be relatively easy.
+
+The code may be used under the [Apache License, Version 2.0](http://opensource.org/licenses/Apache-2.0)

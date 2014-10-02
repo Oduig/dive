@@ -97,7 +97,7 @@ object RcServerConsole extends App {
 
   private def disconnect() = {
     mouseMover.stop()
-    connection map (_.close)
+    connection map (_.close())
     println("Disconnected.")
   }
 

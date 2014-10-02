@@ -10,16 +10,13 @@ import scala.annotation.tailrec
 
 /**
  * Relatively move mouse position
- * Will smoothen out the mouse when move(x, y) is called, smoothening the mouse by moving at most pixelsPerSecond
  * If there are no more move commands, will go idle for slackMs to save the whale
  */
-class MouseMover(val slackMs: Long = 10.millis.toMillis, val pixelsPerSecond: Int = 8000) {
+class MouseMover(val slackMs: Long = 10.millis.toMillis) {
 
   private var sensitivity = 1f
   private var running = false
   private val robot = new Robot()
-
-  private val moveDelayNanos = Math.max(1, 1000000000 / pixelsPerSecond)
 
   private val dx = new AtomicInteger()
   private val dy = new AtomicInteger()
@@ -61,8 +58,8 @@ class MouseMover(val slackMs: Long = 10.millis.toMillis, val pixelsPerSecond: In
 
   private def update() {
     @tailrec def iter(moveX: Float, moveY: Float, restX: Float=0, restY: Float=0): Unit = {
-      val largest = Math max (Math abs moveX, Math abs moveY)
-      if (largest >= 1) {
+      if (moveX != 0 || moveY != 0) {
+        val largest = Math max (Math abs moveX, Math abs moveY)
         // Normalize
         val stepX = moveX / largest
         val stepY = moveY / largest
@@ -72,21 +69,11 @@ class MouseMover(val slackMs: Long = 10.millis.toMillis, val pixelsPerSecond: In
         val discreteY = (restY + stepY).toInt
 
         robot.mouseMove(offset.x + discreteX, offset.y + discreteY)
-        nanosleep(moveDelayNanos)
         // Calculate new position and remaining move
         iter(moveX - stepX + dx.getAndSet(0), moveY - stepY + dy.getAndSet(0), restX + stepX - discreteX, restY + stepY - discreteY)
       }
     }
 
     iter(dx.getAndSet(0), dy.getAndSet(0))
-  }
-
-  @tailrec final def nanosleep(remaining: Long, previous: Long = System.nanoTime): Unit = {
-    if (remaining > 0) {
-      val _ = 3.14 * 9.1
-      val t = System.nanoTime
-      val dt = Math.max(t - previous, 0)
-      nanosleep(remaining - dt, t)
-    }
   }
 }

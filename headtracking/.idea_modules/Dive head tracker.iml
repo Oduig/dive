@@ -5,9 +5,11 @@
       <configuration>
         <option name="compilerLibraryLevel" value="Project" />
         <option name="compilerLibraryName" value="SBT: scala:2.11.0" />
-        <option name="compilerOptions" value="-bootclasspath C:\Localdata\Programs\Android\sdk\platforms\android-10\android.jar;C:\Localdata\Programs\Android\sdk\tools/support/annotations.jar -javabootclasspath C:\Localdata\Programs\Android\sdk\platforms\android-10\android.jar;C:\Localdata\Programs\Android\sdk\tools/support/annotations.jar -feature" />
+        <option name="compilerOptions" value="-update-sbt-classifiers -bootclasspath %ANDROID_HOME%\platforms\android-10\android.jar;%ANDROID_HOME\tools/support/annotations.jar -javabootclasspath %ANDROID_HOME%\platforms\android-10\android.jar;%ANDROID_HOME\tools/support/annotations.jar -feature" />
+        <option name="deprecationWarnings" value="true" />
         <option name="fsc" value="true" />
         <option name="languageLevel" value="Scala 2.11" />
+        <option name="uncheckedWarnings" value="true" />
       </configuration>
     </facet>
     <facet type="android" name="Android">

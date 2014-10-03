@@ -96,7 +96,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="SBT: scala:2.10.3" level="project" />
+    <orderEntry type="library" name="SBT: scala:2.11.0" level="project" />
   </component>
 </module>
 

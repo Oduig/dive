@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="scala" name="Scala">
+      <configuration>
+        <option name="compilerLibraryLevel" value="Project" />
+        <option name="compilerLibraryName" value="SBT: scala:2.11.0" />
+        <option name="compilerOptions" value="-bootclasspath C:\Localdata\Programs\Android\sdk\platforms\android-10\android.jar;C:\Localdata\Programs\Android\sdk\tools/support/annotations.jar -javabootclasspath C:\Localdata\Programs\Android\sdk\platforms\android-10\android.jar;C:\Localdata\Programs\Android\sdk\tools/support/annotations.jar -feature" />
+        <option name="deprecationWarnings" value="true" />
+        <option name="fsc" value="true" />
+        <option name="languageLevel" value="Scala 2.11" />
+        <option name="uncheckedWarnings" value="true" />
+      </configuration>
+    </facet>
+    <facet type="android" name="Android">
+      <configuration>
+        <option name="GEN_FOLDER_RELATIVE_PATH_APT" value="/../gen" />
+        <option name="GEN_FOLDER_RELATIVE_PATH_AIDL" value="/../gen" />
+        <option name="MANIFEST_FILE_RELATIVE_PATH" value="/../AndroidManifest.xml" />
+        <option name="RES_FOLDER_RELATIVE_PATH" value="/../res" />
+        <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/../assets" />
+        <option name="LIBS_FOLDER_RELATIVE_PATH" value="/../libs" />
+        <option name="APK_PATH" value="/../bin\.build_integration\hello-scaloid-sbt-BUILD-INTEGRATION.apk" />
+        <option name="RUN_PROCESS_RESOURCES_MAVEN_TASK" value="false" />
+        <resOverlayFolders>
+          <path />
+        </resOverlayFolders>
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/../bin/classes" />
+    <output-test url="file://$MODULE_DIR$/../target/scala-2.11/test-classes" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/..">
+      <sourceFolder url="file://$MODULE_DIR$/../src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../target/scala-2.11/src_managed/main" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../res" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../tests/resources" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../gen" isTestSource="false" generated="true" />
+      <excludeFolder url="file://$MODULE_DIR$/../.idea" />
+      <excludeFolder url="file://$MODULE_DIR$" />
+      <excludeFolder url="file://$MODULE_DIR$/../bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../target" />
+      <excludeFolder url="file://$MODULE_DIR$/../target/resolution-cache" />
+      <excludeFolder url="file://$MODULE_DIR$/../target/scala-2.11/cache" />
+      <excludeFolder url="file://$MODULE_DIR$/../target/streams" />
+    </content>
+    <orderEntry type="jdk" jdkName="Android API 19 Platform" jdkType="Android SDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" scope="PROVIDED" name="SBT: org.scala-lang:scala-library:2.11.0" level="project" />
+    <orderEntry type="library" name="SBT: org.scaloid:scaloid_2.11:3.4-10" level="project" />
+  </component>
+</module>
+

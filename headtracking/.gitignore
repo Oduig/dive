@@ -1,4 +1,5 @@
 bin/
 gen/
 target/
-.idea*/
+.idea/workspace.xml
+.idea/tasks.xml

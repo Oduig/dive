@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="scala-2.11">
+    <CLASSES>
+      <root url="jar://D:/Programs/Scala/scala-2.11.0-M4/lib/scala-compiler.jar!/" />
+      <root url="jar://D:/Programs/Scala/scala-2.11.0-M4/lib/scala-library.jar!/" />
+      <root url="jar://D:/Programs/Scala/scala-2.11.0-M4/lib/scala-reflect.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://D:/Programs/Scala/scala-2.11.0-M4/src/scala-library-src.jar!/" />
+    </SOURCES>
+  </library>
+</component>

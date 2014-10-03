@@ -27,7 +27,9 @@ What I have achieved so far:
 	* UDP, straightforward.
 	* Bluetooth. I implemented it so that the Android app acts as the client. Make sure you enter your devices' bluetooth IDs into the program.
 	* TCP. At the moment, it is *really* slow, so I recommend the other two.
-* Try or buy Tridef 3D. It works on both NVIDIA and ATI cards, and allows you to render modern off-the-shelf games in 3D side-by-side mode.
+* Try or buy Tridef 3D. It works on both NVIDIA and ATI cards, and allows you to render off-the-shelf games in 3D side-by-side mode. Your game needs at least:
+	* DirectX support so that Tridef can render 3D.
+	* Windowed (fullscreen or not) support so that Splashtop can stream it.
 * Buy an Xbox360 controller for PC, or use your own. Top tip for minimum entanglement: it should be wireless.
 
 What's on my todo list:

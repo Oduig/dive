@@ -29,8 +29,7 @@ class HeadTrackerUI extends RichActivity {
 
     radioGroup.setOnCheckedChangeListener(connectionTypeChanged)
     connectButton.setOnClickListener(connectBtnClick)
-    //sensorBroker.gyroscope.onChange(onOrientationChanged _)
-    sensorBroker.gyroscope.observable.buffer(3).subscribe(onOrientationChanged _)
+    sensorBroker.gyroscope.subscribe(values => onOrientationChanged(values :: Nil))
   }
 
   override def onCreateOptionsMenu(menu: Menu): Boolean = {

@@ -50,7 +50,7 @@ class Vec(private val coordinate: mutable.Buffer[Float]) {
   // After you try google, please ask them to support special characters!
   override def toString() = coordinate.map(f => f"$f%.1f").mkString("(", ", ", ")")
 
-  def toCsv(scale: Int = 1000) = coordinate.map(c => (c * scale).toInt).mkString(",")
+  def toCsv() = coordinate.map(_.toInt).mkString(",")
 }
 
 object Vec {

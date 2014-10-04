@@ -4,7 +4,7 @@ android.Plugin.androidBuild
 
 name := "Dive head tracker"
 
-scalaVersion := "2.11.0"
+scalaVersion := "2.11.1"
 
 proguardCache in Android ++= Seq(
 )

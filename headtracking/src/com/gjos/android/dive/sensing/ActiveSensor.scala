@@ -2,8 +2,9 @@ package com.gjos.android.dive.sensing
 
 trait ActiveSensor {
   val sensorType: Int
+  val pollRate: Int
 
-  var handleChange: Option[Array[Float] => Unit] = None
+  private var handleChange: Option[Array[Float] => Unit] = None
   def subscribe(handle: Array[Float] => Unit) {
     handleChange = Some(handle)
   }

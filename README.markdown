@@ -33,8 +33,6 @@ What I have achieved so far:
 * Buy an Xbox360 controller for PC, or use your own. Top tip for minimum entanglement: it should be wireless.
 
 What's on my todo list:
-
-* Test if bluetooth and UDP can be made even faster and less resource intensive.
 * ![Compensate for vertical and horizontal drift](http://www.oculus.com/blog/magnetometer/). Horizontal drift is OK since you don't really notice which way you face, but vertical drift can be a bit annoying. Especially when jumping through portals. Right now, I use the Xbox controller every so often to correct drift. 
 * See if I can use the Z axis of the gyro so that it rolls the camera when you tilt your head.
 * Lean forward/left/right/back to walk

@@ -6,7 +6,7 @@ import android.widget.{TextView, EditText, RadioGroup, Button}
 import com.gjos.android.dive.calc.Vec
 import com.gjos.android.dive.connectivity._
 import com.gjos.android.dive.persistence.{UiSettings, SQLite}
-import com.gjos.android.dive.sensing.SensorBroker
+import com.gjos.android.dive.sensing.{Gesture, SensorBroker}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Try, Failure, Success}
 
@@ -29,6 +29,7 @@ class HeadTrackerUI extends RichActivity {
 
     radioGroup.setOnCheckedChangeListener(connectionTypeChanged)
     connectButton.setOnClickListener(connectBtnClick)
+    sensorBroker.accelerometer.subscribe(onAcceleration)
     sensorBroker.gyroscope.subscribe(onOrientationChanged)
   }
 
@@ -143,6 +144,7 @@ class HeadTrackerUI extends RichActivity {
         toast("Connected!")
         connectButton.setText("Disconnect")
         sensorBroker.startListening()
+        learnGesturesFor(3000)
       case Failure(ex) =>
         toast("Failed to connect: " + ex.getMessage)
     }
@@ -161,15 +163,63 @@ class HeadTrackerUI extends RichActivity {
     connectButton.setEnabled(true)
   }
 
-  var lastMeasurement = currentMicros
+  var currentGesture = Gesture.None
+  var lastGestureTime = 0l
+  def learnGesturesFor(duration: Long) {
+    toast("Learning!")
+    lastGestureTime = System.currentTimeMillis + duration
+  }
+  var (tresholdX, tresholdY, tresholdZ) = (0f, 0f, 0f)
+  def onAcceleration(values: Array[Float]): Unit = {
+    val Array(x, y, z) = values
+    val now = System.currentTimeMillis
+    if (now < lastGestureTime) { // learning mode
+      tresholdX = if (x > tresholdX) x * 1.5f else if (-x > tresholdX) -x * 1.5f else tresholdX
+      tresholdY = if (y > tresholdY) y * 1.5f else if (-y > tresholdY) -y * 1.5f else tresholdY
+      tresholdZ = if (z > tresholdZ) z * 1.5f else if (-z > tresholdZ) -z * 1.5f else tresholdZ
+    } else {
+      val gesture =
+        if (now < lastGestureTime + 2000) {
+          Gesture.None
+        } else if (x > tresholdX) {
+          toast("Jump!")
+          Gesture.Jump
+        } else if (-x > tresholdX) {
+          toast("Crouch!")
+          Gesture.Crouch
+        } else if (z > tresholdZ) {
+          toast("North!")
+          if (y > tresholdY) Gesture.MoveNE
+          else if (-y > tresholdY) Gesture.MoveNW
+          else Gesture.MoveN
+        } else if (-z > tresholdZ) {
+          toast("South!")
+          if (y > tresholdY) Gesture.MoveSE
+          else if (-y > tresholdY) Gesture.MoveSW
+          else Gesture.MoveS
+        } else if (y > tresholdY) {
+          toast("East!")
+          Gesture.MoveE
+        } else if (-y > tresholdY) {
+          toast("West!")
+          Gesture.MoveW
+        } else {
+          Gesture.None
+        }
+      currentGesture = gesture
+      if (gesture != Gesture.None) {
+        lastGestureTime = now
+      }
+    }
+  }
+
+  var lastGyroMeasurement = currentMicros
   def onOrientationChanged(values: Array[Float]): Unit = {
     val muSec = currentMicros
-    val dt = muSec - lastMeasurement
-    lastMeasurement = muSec
+    val dt = muSec - lastGyroMeasurement
+    lastGyroMeasurement = muSec
 
-    val radiansMoved = Vec(0, 0, 0)
-    radiansMoved += Vec(values(0), values(1), values(2))
-    radiansMoved *= dt / 1000000f
+    val radiansMoved = Vec(values(0) * dt / 1000000f, values(1) * dt / 1000000f, currentGesture)
 
     val csv = radiansMoved.toCsv()
     statusText.setText(s"Radians moved: $csv")

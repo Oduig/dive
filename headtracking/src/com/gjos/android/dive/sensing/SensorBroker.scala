@@ -9,7 +9,7 @@ class SensorBroker(context: Context) extends SensorEventListener {
   val accelerometer = new LinearAccelerationSensor()
   val gyroscope = new GyroscopeSensor()
 
-  private val sensors = Set(gyroscope)
+  private val sensors = Set(accelerometer, gyroscope)
 
   def startListening() = registerSensorListeners()
   def stopListening() = unregisterSensorListeners()
@@ -17,7 +17,7 @@ class SensorBroker(context: Context) extends SensorEventListener {
   private def registerSensorListeners() {
     for (sensor <- sensors) yield {
       val sensorDevice = sensorManager.getDefaultSensor(sensor.sensorType)
-      sensorManager.registerListener(this, sensorDevice, SensorManager.SENSOR_DELAY_FASTEST)
+      sensorManager.registerListener(this, sensorDevice, sensor.pollRate)
     }
   }
 

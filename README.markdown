@@ -34,11 +34,9 @@ What I have achieved so far:
 
 What's on my todo list:
 
-* Improve the latency of TCP
 * Test if bluetooth and UDP can be made even faster and less resource intensive.
-* Find out why, after some minutes of playtime, the game on the PC starts lagging.
-* See if there is any way to fix vertical drift. Horizontal drift is OK since you don't really notice which way you face, but looking up while your character is looking down can be a bit annoying. Especially when jumping through portals. Right now, I use the Xbox controller every so often to correct drift.
-* See if I can use the Z axis of the gyro so that it tilts the screen when you tilt your head.
+* ![Compensate for vertical and horizontal drift](http://www.oculus.com/blog/magnetometer/). Horizontal drift is OK since you don't really notice which way you face, but vertical drift can be a bit annoying. Especially when jumping through portals. Right now, I use the Xbox controller every so often to correct drift. 
+* See if I can use the Z axis of the gyro so that it rolls the camera when you tilt your head.
 * Lean forward/left/right/back to walk
 * Jump to jump
 

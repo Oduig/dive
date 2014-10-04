@@ -12,6 +12,7 @@ class TcpConnection(protected val ip: String, protected val port: Int) extends C
 
   protected def openSafely() {
     val sock = new Socket()
+    sock setTcpNoDelay true
     sock.connect(new InetSocketAddress(ip, port), 3000)
     val stream = new DataOutputStream(sock.getOutputStream)
     connection = Some((sock, stream))

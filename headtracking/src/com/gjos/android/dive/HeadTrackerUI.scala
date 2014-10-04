@@ -29,7 +29,7 @@ class HeadTrackerUI extends RichActivity {
 
     radioGroup.setOnCheckedChangeListener(connectionTypeChanged)
     connectButton.setOnClickListener(connectBtnClick)
-    sensorBroker.gyroscope.subscribe(values => onOrientationChanged(values :: Nil))
+    sensorBroker.gyroscope.subscribe(onOrientationChanged)
   }
 
   override def onCreateOptionsMenu(menu: Menu): Boolean = {
@@ -162,17 +162,14 @@ class HeadTrackerUI extends RichActivity {
   }
 
   var lastMeasurement = currentMicros
-  def onOrientationChanged(buffer: Seq[Array[Float]]): Unit = {
+  def onOrientationChanged(values: Array[Float]): Unit = {
     val muSec = currentMicros
     val dt = muSec - lastMeasurement
     lastMeasurement = muSec
 
     val radiansMoved = Vec(0, 0, 0)
-    for (values <- buffer) {
-      radiansMoved += Vec(values(0), values(1), values(2))
-    }
+    radiansMoved += Vec(values(0), values(1), values(2))
     radiansMoved *= dt / 1000000f
-    radiansMoved /= buffer.size
 
     val csv = radiansMoved.toCsv()
     statusText.setText(s"Radians moved: $csv")

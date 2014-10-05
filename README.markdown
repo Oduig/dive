@@ -23,7 +23,7 @@ What I have achieved so far:
 	* Have set the Splashtop app's mode to *smooth* rather than *sharp*.
 	* Open a port on your firewall so the signal stays in your LAN (for latency).
 	* Streaming 1080p takes about 50 Mbit. Wireless 802.11n is recommended, 802.11g is the minimum. You do not need a fast internet connection.
-* Use the client app on Android together with the server app, and connect with one of:
+* Use the client app on Android together with the server app. It currently supports yaw, pitch, and jumping. Connect with one of:
 	* UDP, straightforward.
 	* Bluetooth. I implemented it so that the Android app acts as the client. Make sure you enter your devices' bluetooth IDs into the program.
 	* TCP. It is slower than the other two, but not by a shocking amount.
@@ -33,10 +33,15 @@ What I have achieved so far:
 * Buy an Xbox360 controller for PC, or use your own. Top tip for minimum entanglement: it should be wireless.
 
 What's on my todo list:
+
 * [Compensate for vertical and horizontal drift](http://www.oculus.com/blog/magnetometer/). Horizontal drift is OK since you don't really notice which way you face, but vertical drift can be a bit annoying. Especially when jumping through portals. Right now, I use the Xbox controller every so often to correct drift. 
 * See if I can use the Z axis of the gyro so that it rolls the camera when you tilt your head.
-* Lean forward/left/right/back to walk
-* Jump to jump
+* A second application outside of gaming. I'm thinking of viewing Android 3d sphere photo's, but I'm not quite sure yet.
+
+What I dropped from my todo list:
+
+* Lean forward/left/rightt/back to walk. It's really difficult to derive the phone's location from acceleration values, and implementing it would effectively mean the user has to be really careful not to move his head while turning.
+
 
 License
 -----

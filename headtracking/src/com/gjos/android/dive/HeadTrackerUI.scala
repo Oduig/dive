@@ -165,6 +165,7 @@ class HeadTrackerUI extends RichActivity {
   }
 
   def onAcceleration(values: Array[Float]): Unit = {
+    //println("AccelerometerValues: " + values.mkString("\t"))
     gestureSensor.detectGesture(values(0), values(1), values(2))
   }
 
@@ -174,8 +175,22 @@ class HeadTrackerUI extends RichActivity {
     val dt = muSec - lastGyroMeasurement
     lastGyroMeasurement = muSec
 
-    val gesture = gestureSensor.popGesture()
-    val moveVec = Vec(values(0) * dt / 1000f, values(1) * dt / 1000f, gesture)
+    val outX = values(0) * dt / 1000f
+    val outY = values(1) * dt / 1000f
+
+    // We want to distinguish looking up (-y) from jumping. Do this by assuming that during a jump, your head tilts down
+    val gesture = gestureSensor.popGesture() match {
+      case Gesture.Jump if outY < 0 => // looking up and jumping
+        Gesture.Empty
+      case Gesture.Uncrouch /*if outY < 0*/ => // lookign up and uncrouching
+        gestureSensor.crouched = true
+        Gesture.Empty
+      case Gesture.Crouch /*if outY < 0*/ => // looking down and crouching
+        gestureSensor.crouched = false
+        Gesture.Empty
+      case g => g
+    }
+    val moveVec = Vec(outX, outY, gesture)
 
     val csv = moveVec.toCsv()
     statusText.setText(s"Moved: $csv")

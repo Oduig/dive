@@ -4,8 +4,15 @@ package com.gjos.android.dive.sensing
  * Detects gestures from accelerometer
  */
 class GestureDetector() {
-  private val GestureTreshold = 3f
-  private val MinGestureInterval = 2000
+  private val MinGestureInterval = 1000
+  private val CrouchTreshold = 1.7f
+  private val JumpTreshold = 3f
+  private val FramesInGesture = 4
+
+  private var jumpFrames = 0
+  private var crouchFrames = 0
+  private var uncrouchFrames = 0
+  var crouched = false
 
   private var _currentGesture = Gesture.Empty
   private var latestGestureTime = 0L
@@ -17,55 +24,45 @@ class GestureDetector() {
   }
 
   def learnGesturesFor(duration: Long) {
-    latestGestureTime = System.currentTimeMillis + duration
+    //latestGestureTime = System.currentTimeMillis + duration
   }
 
-  private var (tresholdXmax, tresholdYMax, tresholdZmax) = (0f, 0f, 0f)
-  private var (tresholdXmin, tresholdYmin, tresholdZmin) = (0f, 0f, 0f)
+  //private var tresholdXmax = 0f
+  //private var tresholdXmin = 0f
+
+  private def resetFrames(): Unit = {
+    jumpFrames = 0
+    crouchFrames = 0
+    uncrouchFrames = 0
+  }
 
   def detectGesture(x: Float, y: Float, z: Float) {
     val now = System.currentTimeMillis
 
     _currentGesture = {
-      if (now < latestGestureTime) {
-        // learning mode
-        if (x > tresholdXmax) tresholdXmax = x * GestureTreshold
-        else if (x < tresholdXmin) tresholdXmin = x * GestureTreshold
-
-        if (y > tresholdYMax) tresholdYMax = y * GestureTreshold
-        else if (y < tresholdYmin) tresholdYmin = y * GestureTreshold
-
-        if (z > tresholdZmax) tresholdZmax = z * GestureTreshold
-        else if (z < tresholdZmin) tresholdZmin = z * GestureTreshold
-
-        Gesture.Empty
-      } else if (now < latestGestureTime + MinGestureInterval) {
+      if (now < latestGestureTime + MinGestureInterval) {
         // Skip mode (to avoid flooding gestures)
         Gesture.Empty
-      } else if (x > tresholdXmax) {
+      } else if (x < -CrouchTreshold && uncrouchFrames >= FramesInGesture && crouched) {
+        crouched = false
+        resetFrames()
+        Gesture.Uncrouch
+      } else if (x < -JumpTreshold && jumpFrames >= FramesInGesture && !crouched) {
+        resetFrames()
         Gesture.Jump
-      } else if (x < tresholdXmin) {
+      } else if (x > CrouchTreshold && crouchFrames >= FramesInGesture && !crouched) {
+        crouched = true
+        resetFrames()
         Gesture.Crouch
-      } else if (z < tresholdZmin) {
-        if (y < tresholdYmin) {
-          Gesture.MoveNE
-        } else if (y > tresholdYMax) {
-          Gesture.MoveNW
-        } else {
-          Gesture.MoveN
-        }
-      } else if (z > tresholdZmax) {
-        if (y < tresholdYmin) {
-          Gesture.MoveSE
-        } else if (y > tresholdYMax) {
-          Gesture.MoveSW
-        } else {
-          Gesture.MoveS
-        }
-      } else if (y < tresholdYmin) {
-        Gesture.MoveE
-      } else if (y > tresholdYMax) {
-        Gesture.MoveW
+      } else if (x > CrouchTreshold && crouched && jumpFrames == 0 && crouchFrames == 0) {
+        uncrouchFrames += 1
+        Gesture.Empty
+      } else if (x < -CrouchTreshold && !crouched && jumpFrames == 0 && uncrouchFrames == 0) {
+        crouchFrames += 1
+        Gesture.Empty
+      } else if (x > JumpTreshold && !crouched && uncrouchFrames == 0 && crouchFrames == 0) {
+        jumpFrames += 1
+        Gesture.Empty
       } else {
         Gesture.Empty
       }

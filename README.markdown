@@ -36,11 +36,14 @@ What's on my todo list:
 
 * [Compensate for vertical and horizontal drift](http://www.oculus.com/blog/magnetometer/). Horizontal drift is OK since you don't really notice which way you face, but vertical drift can be a bit annoying. Especially when jumping through portals. Right now, I use the Xbox controller every so often to correct drift. 
 * See if I can use the Z axis of the gyro so that it rolls the camera when you tilt your head.
+* An option to disable jumping.
+* Crouching and uncrouching. Partially implemented, but still very unreliable.
 * A second application outside of gaming. I'm thinking of viewing Android 3d sphere photo's, but I'm not quite sure yet.
+* A talk on this project for my company, about the applications and challenges of VR.
 
 What I dropped from my todo list:
 
-* Lean forward/left/rightt/back to walk. It's really difficult to derive the phone's location from acceleration values, and implementing it would effectively mean the user has to be really careful not to move his head while turning.
+* Lean forward/left/rightt/back to walk. It's really difficult to derive the phone's location from acceleration values, and implementing it would effectively mean the user has to be really careful not to move his head much while turning.
 
 
 License

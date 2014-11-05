@@ -23,13 +23,6 @@ class GestureDetector() {
     r
   }
 
-  def learnGesturesFor(duration: Long) {
-    //latestGestureTime = System.currentTimeMillis + duration
-  }
-
-  //private var tresholdXmax = 0f
-  //private var tresholdXmin = 0f
-
   private def resetFrames(): Unit = {
     jumpFrames = 0
     crouchFrames = 0

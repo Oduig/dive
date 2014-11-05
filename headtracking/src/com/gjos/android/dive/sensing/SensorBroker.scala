@@ -9,7 +9,10 @@ class SensorBroker(context: Context) extends SensorEventListener {
   val accelerometer = new LinearAccelerationSensor()
   val gyroscope = new GyroscopeSensor()
 
-  private val sensors = Set(accelerometer, gyroscope)
+  private val sensors = Set(
+    //accelerometer,
+    gyroscope
+  )
 
   def startListening() = registerSensorListeners()
   def stopListening() = unregisterSensorListeners()

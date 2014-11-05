@@ -12,7 +12,7 @@ import scala.util.{Try, Failure, Success}
 
 class HeadTrackerUI extends RichActivity {
   lazy val sensorBroker = new SensorBroker(this)
-  val gestureSensor = new GestureDetector()
+  val gestureDetector = new GestureDetector()
   lazy val database = new SQLite(getString(R.string.dbName), getString(R.string.dbVersion).toInt, getApplicationContext)
   lazy val defaultSettings = UiSettings(
     getString(R.string.defaultConnectionType).toInt,
@@ -30,7 +30,7 @@ class HeadTrackerUI extends RichActivity {
 
     radioGroup.setOnCheckedChangeListener(connectionTypeChanged)
     connectButton.setOnClickListener(connectBtnClick)
-    sensorBroker.accelerometer.subscribe(onAcceleration)
+    //sensorBroker.accelerometer.subscribe(onAcceleration)
     sensorBroker.gyroscope.subscribe(onOrientationChanged)
   }
 
@@ -145,7 +145,6 @@ class HeadTrackerUI extends RichActivity {
         toast("Connected!")
         connectButton.setText("Disconnect")
         sensorBroker.startListening()
-        gestureSensor.learnGesturesFor(3000)
       case Failure(ex) =>
         toast("Failed to connect: " + ex.getMessage)
     }
@@ -165,8 +164,7 @@ class HeadTrackerUI extends RichActivity {
   }
 
   def onAcceleration(values: Array[Float]): Unit = {
-    //println("AccelerometerValues: " + values.mkString("\t"))
-    gestureSensor.detectGesture(values(0), values(1), values(2))
+    gestureDetector.detectGesture(values(0), values(1), values(2))
   }
 
   var lastGyroMeasurement = currentMicros
@@ -177,24 +175,25 @@ class HeadTrackerUI extends RichActivity {
 
     val outX = values(0) * dt / 1000f
     val outY = values(1) * dt / 1000f
+    val outZ = values(2) * dt / 1000f
 
     // We want to distinguish looking up (-y) from jumping. Do this by assuming that during a jump, your head tilts down
-    val gesture = gestureSensor.popGesture() match {
-      case Gesture.Jump if outY < 0 => // looking up and jumping
-        Gesture.Empty
-      case Gesture.Uncrouch /*if outY < 0*/ => // lookign up and uncrouching
-        gestureSensor.crouched = true
-        Gesture.Empty
-      case Gesture.Crouch /*if outY < 0*/ => // looking down and crouching
-        gestureSensor.crouched = false
-        Gesture.Empty
-      case g => g
-    }
-    val moveVec = Vec(outX, outY, gesture)
+//    val gesture = gestureDetector.popGesture() match {
+//      case Gesture.Jump if outY < 0 => // looking up and jumping
+//        Gesture.Empty
+//      case Gesture.Uncrouch if outY < 0 => // lookign up and uncrouching
+//        gestureDetector.crouched = true
+//        Gesture.Empty
+//      case Gesture.Crouch if outY < 0 => // looking down and crouching
+//        gestureDetector.crouched = false
+//        Gesture.Empty
+//      case g => g
+//    }
+    val moveVec = Vec(outX, outY, outZ)
 
     val csv = moveVec.toCsv()
     statusText.setText(s"Moved: $csv")
-    Gesture.toString(gesture) map toast
+    //Gesture.toString(gesture) map toast
 
     currentConnection foreach (_.send(csv) onFailure handleFailure)
   }

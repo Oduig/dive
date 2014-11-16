@@ -6,7 +6,7 @@ public class MouseLook : MonoBehaviour
 {
     public float sensitivityX = 5F;
     public float sensitivityY = 5F;
-    public float sensitivityZ = 5F;
+    public float sensitivityZ = .7F;
 
     public float minimumX = -360F;
     public float maximumX = 360F;

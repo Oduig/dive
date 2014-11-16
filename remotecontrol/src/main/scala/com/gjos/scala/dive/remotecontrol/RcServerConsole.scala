@@ -116,8 +116,8 @@ object RcServerConsole extends App {
   private def decreaseSensitivity() = println("New sensitivity: " + mouse.lessSensitive())
 
   private def toggleRoll() {
-    rollEnabled = !rollEnabled
     println((if (rollEnabled) "Disabled" else "Enabled") + " camera roll.")
+    rollEnabled = !rollEnabled
   }
 
   private def setJumpKey(s: String) {

@@ -2,10 +2,10 @@ name := "remotecontrol"
 
 version := "1.0"
 
-scalaVersion := "2.10.1"
+scalaVersion := "2.11.1"
 
 libraryDependencies ++= Seq(
-  "org.scalatest" % "scalatest_2.10" % "2.2.0" % "test"
+  "org.scalatest" % "scalatest_2.11" % "2.2.1" % "test"
 )
 
 unmanagedJars in Compile <++= baseDirectory map { base =>
@@ -15,6 +15,13 @@ unmanagedJars in Compile <++= baseDirectory map { base =>
 
 javaOptions ++= Seq(
   "-Dbluecove.native.path=" + baseDirectory.toString + "/resources"
+)
+
+scalacOptions ++= Seq(
+  "-target:jvm-1.7",
+  "-feature",
+  "-deprecation",
+  "-unchecked"
 )
 
 fork in run := true

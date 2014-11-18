@@ -14,11 +14,11 @@ class MouseMoverTest extends WordSpec with Matchers {
       val startpos = mouseMover.position
 
       mouseMover.start()
-      mouseMover.move(10, 10)
+      mouseMover.move(10, 10, 0)
       Thread sleep 40.millis.toMillis
-      mouseMover.move(-20, 0)
+      mouseMover.move(-20, 0, 0)
       Thread sleep 40.millis.toMillis
-      mouseMover.move(20, 50)
+      mouseMover.move(20, 50, 0)
 
       Thread sleep 100.millis.toMillis
       mouseMover.stop()

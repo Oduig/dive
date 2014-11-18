@@ -8,6 +8,7 @@ import com.gjos.scala.dive.remotecontrol.control.{KeyboardTyper, MouseMover}
 
 import scala.concurrent.duration._
 import scala.util.{Success, Failure}
+import scala.io.StdIn
 
 object RcServerConsole extends App {
   println("Remote control server app for Durovis Dive.")
@@ -47,7 +48,7 @@ object RcServerConsole extends App {
     }
     if (cmd != List('q')) {
       println("""What would you like to do?""")
-      val newCmd = readLine()
+      val newCmd = StdIn.readLine()
       if (newCmd != null) handleInput(newCmd.toList)
     }
   }

@@ -14,7 +14,9 @@ import scala.annotation.tailrec
  */
 class MouseMover(val slackMs: Long = 10.millis.toMillis) {
 
-  private var sensitivity = 1f
+  private var sensitivityX = 1f
+  private var sensitivityY = 1f
+  private var sensitivityZ = 1f
   private var running = false
   private val robot = new Robot()
 
@@ -43,19 +45,19 @@ class MouseMover(val slackMs: Long = 10.millis.toMillis) {
   }
 
   def move(x: Int, y: Int, z: Int) {
-    dx.addAndGet((x * sensitivity).toInt)
-    dy.addAndGet((y * sensitivity).toInt)
-    dz.addAndGet((z * sensitivity).toInt)
+    dx.addAndGet((x * sensitivityX).toInt)
+    dy.addAndGet((y * sensitivityY).toInt)
+    dz.addAndGet((z * sensitivityZ).toInt)
   }
 
-  def moreSensitive(): Float = {
-    sensitivity *= 2
-    sensitivity
-  }
+  def moreSensitive(c: Option[Char]): (Float, Float, Float) = changeSensitivity(1.5f)(c getOrElse ' ')
+  def lessSensitive(c: Option[Char]): (Float, Float, Float) = changeSensitivity(1/1.5f)(c getOrElse ' ')
 
-  def lessSensitive(): Float = {
-    sensitivity /= 2
-    sensitivity
+  private def changeSensitivity(factor: Float)(c: Char): (Float, Float, Float) = {
+    if (c == 'x' || c == ' ') sensitivityX *= factor
+    if (c == 'y' || c == ' ') sensitivityY *= factor
+    if (c == 'z' || c == ' ') sensitivityZ *= factor
+    (sensitivityX, sensitivityY, sensitivityZ)
   }
 
   private def update() {

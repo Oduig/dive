@@ -27,8 +27,8 @@ object RcServerConsole extends App {
           |u <port> - listen for UDP connection
           |b - listen for Bluetooth connection
           |d - disconnect
-          |p - increase sensitivity
-          |m - decrease sensitivity
+          |p <x|y|z> - increase sensitivity (all axes if none supplied)
+          |m <x|y|z> - decrease sensitivity (all axes if none supplied)
           |z - toggle roll (aka tilt) functionality via the scrollwheel (default off)
           |j <key> - bind <key> to jump (default spacebar)
           |c <toggle|hold> <key> - bind <key> to crouch (default none), with mode <toggle|hold> (default toggle)
@@ -38,8 +38,8 @@ object RcServerConsole extends App {
       case 'u' :: cs => listenUdp(cs.mkString)
       case 'b' :: cs => listenBluetooth()
       case 'd' :: Nil => disconnect()
-      case 'p' :: Nil => increaseSensitivity()
-      case 'm' :: Nil => decreaseSensitivity()
+      case 'p' :: cs => increaseSensitivity(cs.mkString)
+      case 'm' :: cs => decreaseSensitivity(cs.mkString)
       case 'z' :: Nil => toggleRoll()
       case 'j' :: cs => setJumpKey(cs.mkString)
       case 'c' :: cs => setCrouchKey(cs.mkString)
@@ -113,8 +113,15 @@ object RcServerConsole extends App {
     println("Disconnected.")
   }
 
-  private def increaseSensitivity() = println("New sensitivity: " + mouse.moreSensitive())
-  private def decreaseSensitivity() = println("New sensitivity: " + mouse.lessSensitive())
+  private def increaseSensitivity(axes: String) = {
+    val newSens = mouse.moreSensitive(axes.trim.headOption)
+    println("New sensitivity: " + newSens)
+  }
+
+  private def decreaseSensitivity(axes: String) = {
+    val newSens = mouse.lessSensitive(axes.trim.headOption)
+    println("New sensitivity: " + newSens)
+  }
 
   private def toggleRoll() {
     println((if (rollEnabled) "Disabled" else "Enabled") + " camera roll.")

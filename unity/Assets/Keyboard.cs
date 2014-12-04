@@ -10,7 +10,7 @@ public class Keyboard : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if(Input.GetKeyDown(KeyCode.Escape) == true)
+        if(Input.GetKeyDown(KeyCode.Escape))
         {
             Application.Quit();
         }

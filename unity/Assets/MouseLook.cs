@@ -21,23 +21,27 @@ public class MouseLook : MonoBehaviour
     float rotationY = 0F;
     float rotationZ = 0F;
 
+	bool mouseOn = true;
+	
     Quaternion originalRotation;
 
     void Update()
     {
-        rotationX += Input.GetAxis("Mouse X") * sensitivityX;
-        rotationX = ClampAngle(rotationX, minimumX, maximumX);
-        Quaternion xQuaternion = Quaternion.AngleAxis(rotationX, Vector3.up);
+	    if (mouseOn) {
+			rotationX += Input.GetAxis("Mouse X") * sensitivityX;
+			rotationX = ClampAngle(rotationX, minimumX, maximumX);
+			Quaternion xQuaternion = Quaternion.AngleAxis(rotationX, Vector3.up);
 
-        rotationY += Input.GetAxis("Mouse Y") * sensitivityY;
-        rotationY = ClampAngle(rotationY, minimumY, maximumY);
-        Quaternion yQuaternion = Quaternion.AngleAxis(-rotationY, Vector3.right);
+			rotationY += Input.GetAxis("Mouse Y") * sensitivityY;
+			rotationY = ClampAngle(rotationY, minimumY, maximumY);
+			Quaternion yQuaternion = Quaternion.AngleAxis(-rotationY, Vector3.right);
 
-        rotationZ += Input.GetAxis("Mouse ScrollWheel") * sensitivityZ;
-        rotationZ = ClampAngle(rotationZ, minimumZ, maximumZ);
-        Quaternion zQuaternion = Quaternion.AngleAxis(rotationZ, Vector3.back);
+			rotationZ += Input.GetAxis("Mouse ScrollWheel") * sensitivityZ;
+			rotationZ = ClampAngle(rotationZ, minimumZ, maximumZ);
+			Quaternion zQuaternion = Quaternion.AngleAxis(rotationZ, Vector3.back);
 
-        transform.localRotation = originalRotation * xQuaternion * yQuaternion * zQuaternion;
+			transform.localRotation = originalRotation * xQuaternion * yQuaternion * zQuaternion;
+		}
     }
 
     void Start()
@@ -45,6 +49,9 @@ public class MouseLook : MonoBehaviour
         // Make the rigid body not change rotation
         if (rigidbody)
             rigidbody.freezeRotation = true;
+			
+		mouseOn = (Application.platform != RuntimePlatform.Android && Application.platform != RuntimePlatform.IPhonePlayer);
+
         originalRotation = transform.localRotation;
     }
 

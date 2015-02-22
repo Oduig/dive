@@ -11,29 +11,33 @@ public class BlockUpsideDown : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		orientation = (Screen.orientation == ScreenOrientation.LandscapeLeft);
-		if (!orientation) {
-			OnRotate180 ();
-		}
+		Screen.orientation = ScreenOrientation.LandscapeLeft;
+//		orientation = (Screen.orientation == ScreenOrientation.LandscapeLeft);
+//		if (!orientation) {
+//			OnRotate180 ();
+//		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		bool newOrientation = (Screen.orientation == ScreenOrientation.LandscapeLeft);
-		if (orientation != newOrientation) {
-			orientation = newOrientation;
-			OnRotate180();
-		}
+//		bool newOrientation = (Screen.orientation == ScreenOrientation.LandscapeLeft);
+//		if (orientation != newOrientation) {
+//			orientation = newOrientation;
+//			OnRotate180();
+//		}
 	}
 
 	void OnRotate180() {
-		Rect leftRect = camLeft.rect;
-		camLeft.rect = camRight.rect;
-		camRight.rect = leftRect;
-		Vector3 vec = sphereLeft.transform.localScale;
-		sphereLeft.transform.localScale = new Vector3 (1f, -vec.y, 1f);
-		if (sphereRight != null) {
-			sphereRight.transform.localScale = new Vector3 (1f, -vec.y, 1f);
-		}
+//		Rect leftRect = camLeft.rect;
+//		camLeft.rect = camRight.rect;
+//		camRight.rect = leftRect;
+
+//		camLeft.projectionMatrix = camera.projectionMatrix * Matrix4x4.Scale(new Vector3 (-1, 1, 1));
+//		camRight.projectionMatrix = camera.projectionMatrix * Matrix4x4.Scale(new Vector3 (-1, 1, 1));
+//		Vector3 vec = sphereLeft.transform.localScale;
+//		sphereLeft.transform.localScale = new Vector3 (1f, -vec.y, 1f);
+//		if (sphereRight != null) {
+//			sphereRight.transform.localScale = new Vector3 (1f, -vec.y, 1f);
+//		}
 	}
 }

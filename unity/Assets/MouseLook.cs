@@ -47,8 +47,8 @@ public class MouseLook : MonoBehaviour
     void Start()
     {
         // Make the rigid body not change rotation
-        if (rigidbody)
-            rigidbody.freezeRotation = true;
+        if (GetComponent<Rigidbody>())
+            GetComponent<Rigidbody>().freezeRotation = true;
 			
 		mouseOn = (Application.platform != RuntimePlatform.Android && Application.platform != RuntimePlatform.IPhonePlayer);
 

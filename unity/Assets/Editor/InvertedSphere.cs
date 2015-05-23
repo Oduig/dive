@@ -60,7 +60,7 @@
          
          // Add the same material that the original sphere used
          MeshRenderer mr = goNew.AddComponent<MeshRenderer>();
-         mr.sharedMaterial = go.renderer.sharedMaterial;
+         mr.sharedMaterial = go.GetComponent<Renderer>().sharedMaterial;
          
          DestroyImmediate(go);
      }

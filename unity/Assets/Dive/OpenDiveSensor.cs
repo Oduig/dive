@@ -146,8 +146,8 @@ public class OpenDiveSensor : MonoBehaviour {
 
 #if UNITY_EDITOR
 
-		if (rigidbody)
-			rigidbody.freezeRotation = true;
+		if (GetComponent<Rigidbody>())
+			GetComponent<Rigidbody>().freezeRotation = true;
 
   #elif UNITY_ANDROID
 

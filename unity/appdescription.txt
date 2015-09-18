@@ -1,0 +1,29 @@
+With PhotoSphere Viewer Beta, you can now relive your favorite panoramas. You will be inside your photo rather than just looking at it, and you can look around at the view by simply moving your head!
+
+Requirements:
+- Android 2.3+ phone with a Gyroscope
+- A Google Cardboard or Durovis Dive
+- (optional) The Google Camera app
+- (optional) An image resizing tool
+
+A PhotoSphere is a 360*180 degree panoramic photo: not just around you, but above and below as well. With the latest Google Camera app in the Play store, you can now create these photos yourself! Just select the "PhotoSphere" or "Pan 360" mode in the camera app and start shooting.
+
+The Durovis Dive and Google Cardboard are the cheapest virtual reality goggles on the market right now. They are cheap because your smartphone is the screen. Several Android apps are available that show images, games and movies in side-by-side 3D, a.k.a. one image for each eye.
+
+
+PhotoSphere Viewer Beta has two example spheres that you can view:
+- A ski resort panorama made in Ischgl, shot in 2D
+- An office photograph, shot in 3D (requiring a tripod and special equipment)
+
+You can also - experimentally - view your own PhotoSpheres. Due to some limitations of the Unity3D engine and my limited experience with it, this feature is not user-friendly and I cannot guarantee it will work. If you want to try it, follow these steps:
+1. Make a PhotoSphere with the Google Camera app
+2. Use a photo resizing tool to turn your image into a 4096x4096 JPG.
+3. Enter the full path (usually starting with /sdcard/DCIM/Camera) into PhotoSphere Viewer Beta, click open and cross your fingers!
+
+
+This app does not collect personal data or share your photographs. 
+The complete source code is available at:
+https://github.com/Oduig/dive/tree/master/unity
+
+Created by Guido Josquin
+Feel free to contact me at g.josquin+playstore@gmail.com

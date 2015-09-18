@@ -52,7 +52,7 @@ public class ApplyTexture : MonoBehaviour
             printToScreen("Applying texture to sphere...");
             try
             {
-                sphere.renderer.material.mainTexture = photoTexture;
+                sphere.GetComponent<Renderer>().material.mainTexture = photoTexture;
                 printToScreen("");
                 canvas.SetActive(false);
             } catch (System.Exception ex)
